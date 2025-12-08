@@ -3,39 +3,35 @@ package dev.orne.log.manager;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apiguardian.api.API;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Base, logging system agnostic, log level.
+ * Base, logging system agnostic, log appender.
  * 
  * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
  * @version 1.0, 2025-12
  * @since 1.0
  */
 @API(status = API.Status.STABLE, since = "1.0.0")
-public class Level
-implements Serializable, Comparable<Level> {
+public class Appender
+implements Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
 
-    /** The name of the level. */
-    private final String name;
-    /** The numeric value of the level. */
-    private final int value;
+    /** The name of the appender. */
+    private String name;
 
     /**
      * Creates a new instance.
      * 
      * @param builder The builder with the instance state
      */
-    protected Level(
+    protected Appender(
             final BuilderImpl builder) {
         super();
         this.name = Objects.requireNonNull(builder.name, "The name must be set");
-        this.value = Objects.requireNonNull(builder.value, "The value must be set");
     }
 
     /**
@@ -55,26 +51,17 @@ implements Serializable, Comparable<Level> {
      * @return The created builder
      */
     public static Builder copyOf(
-            final Level copy) {
+            final Appender copy) {
         return new BuilderImpl(copy);
     }
 
     /**
-     * Returns the name of the level
+     * Returns the name of the appender.
      * 
-     * @return The name of the level
+     * @return The name of the appender
      */
     public String getName() {
         return this.name;
-    }
-
-    /**
-     * Returns the numeric value of the level.
-     * 
-     * @return The numeric value of the level
-     */
-    public int getValue() {
-        return this.value;
     }
 
     /**
@@ -91,9 +78,7 @@ implements Serializable, Comparable<Level> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(
-                this.name,
-                this.value);
+        return Objects.hash(this.name);
     }
 
     /**
@@ -111,18 +96,8 @@ implements Serializable, Comparable<Level> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Level other = (Level) obj;
-        return Objects.equals(name, other.name) && value == other.value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(final Level other) {
-        return new CompareToBuilder()
-                .append(this.value, other.getValue())
-                .toComparison();
+        final Appender other = (Appender) obj;
+        return Objects.equals(this.name, other.name);
     }
 
     /**
@@ -130,17 +105,18 @@ implements Serializable, Comparable<Level> {
      */
     @Override
     public String toString() {
-        return this.name;
+        return String.format(
+                "Appender [name=%s]",
+                this.name);
     }
 
     /**
-     * Builder interface for {@link Level} instances.
+     * Builder interface for {@link Appender} instances.
      * 
      * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
      * @version 1.0, 2025-12
      * @since 1.0
      */
-    @API(status = API.Status.STABLE, since = "1.0.0")
     public interface Builder {
 
         /**
@@ -149,40 +125,27 @@ implements Serializable, Comparable<Level> {
          * @param name The name of the level
          * @return This builder, for method chaining
          */
-        Builder withName(
-                String name);
+        Builder withName(String name);
 
         /**
-         * Sets the numeric value of the level.
+         * Builds the appender instance.
          * 
-         * @param value The numeric value of the level
-         * @return This builder, for method chaining
+         * @return The built appender instance
          */
-        Builder withValue(
-                int value);
-
-        /**
-         * Builds the level instance.
-         * 
-         * @return The built level instance
-         */
-        Level build();
+        Appender build();
     }
 
     /**
-     * Builder implementation for {@link Level} instances.
+     * Builder implementation for {@link Appender} instances.
      * 
      * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
      * @version 1.0, 2025-12
      * @since 1.0
      */
-    @API(status = API.Status.STABLE, since = "1.0.0")
     protected static class BuilderImpl implements Builder {
 
-        /** The name of the level. */
+        /** The name of the appender. */
         private @Nullable String name;
-        /** The numeric value of the level. */
-        private @Nullable Integer value;
 
         /**
          * Empty constructor.
@@ -196,12 +159,10 @@ implements Serializable, Comparable<Level> {
          * 
          * @param copy The instance to copy
          */
-        public BuilderImpl(
-                final Level copy) {
+        public BuilderImpl(final Appender copy) {
             super();
             Objects.requireNonNull(copy, "Instance to copy cannot be null");
             this.name = copy.getName();
-            this.value = copy.getValue();
         }
 
         /**
@@ -218,18 +179,8 @@ implements Serializable, Comparable<Level> {
          * {@inheritDoc}
          */
         @Override
-        public BuilderImpl withValue(
-                final int value) {
-            this.value = value;
-            return this;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Level build() {
-            return new Level(this);
+        public Appender build() {
+            return new Appender(this);
         }
     }
 }

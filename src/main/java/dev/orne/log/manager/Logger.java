@@ -191,7 +191,7 @@ implements Serializable {
      * @since 1.0
      */
     @API(status = API.Status.STABLE, since = "1.0.0")
-    static class BuilderImpl implements Builder {
+    protected static class BuilderImpl implements Builder {
 
         /** The name of the logger. */
         private @Nullable String name;
