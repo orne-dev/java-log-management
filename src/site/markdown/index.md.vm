@@ -1,0 +1,34 @@
+# Orne log management
+
+## Usage:
+
+```xml
+<project ...>
+...
+  <dependencies>
+    ...
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>${project.artifactId}</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    ...
+  <dependencies>
+...
+</project>
+```
+
+## Provides the next features:
+
+- [ ] Logging system status API
+    - [ ] Available log levels
+    - [ ] Active loggers
+        - [ ] Log level change
+    - [ ] Active appenders
+        - [ ] Dynamic appenders creation/deletion
+- [ ] REST API
+    - [ ] Spring web support
+    - [ ] Link dynamic appenders lifecycle to HTTP Session
+- [ ] Enterprise integration support
+    - [ ] Events system
+    - [ ] Spring integration support
