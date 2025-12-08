@@ -18,3 +18,12 @@
         - `TimeBasedFileRollingPolicy` immutable bean for size based file rolling policies
         - `SizeAndTimeBasedFileRollingPolicy` immutable bean for size and time based file rolling policies
         - `ManagedAppender` immutable bean for managed appenders
+    - Log management exceptions
+        - `LogManagementException` exception for internal log management errors
+        - `IllegalLevelException` exception for invalid or unsupported log level errors
+        - `LoggerNotFoundException` exception for logger not found errors
+        - `AppenderNotFoundException` exception for appender not found errors
+        - `UnmanagedAppenderException` exception for unmanaged appender errors
+        - `InvalidAppenderConfigException` exception for misconfigured appender errors
+        - `InvalidFileRollingConfigException` exception for misconfigured file rolling policy errors
+        - `UnsupportedFileRollingPolicyException` exception for unsupported file rolling policy errors
