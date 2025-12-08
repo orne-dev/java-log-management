@@ -8,3 +8,4 @@
 
 - Log management API
     - `Level` immutable bean for logging system agnostic log levels
+    - `Logger` immutable bean for logging system agnostic loggers
