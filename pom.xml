@@ -10,7 +10,6 @@
     <relativePath />
   </parent>
 
-  <groupId>dev.orne</groupId>
   <artifactId>orne-log-management</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -40,6 +39,9 @@
     <java.module.name>dev.orne.log.management</java.module.name>
     <license.licenseName>lgpl_v3</license.licenseName>
 
+    <jspecify.version>1.0.0</jspecify.version>
+    <commons.lang.version>3.19.0</commons.lang.version>
+
     <github.project.id>java-log-management</github.project.id>
     <sonar.projectKey>orne-dev_java-log-management</sonar.projectKey>
   </properties>
@@ -50,6 +52,11 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>${jspecify.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>${commons.lang.version}</version>
@@ -58,12 +65,6 @@
     <dependency>
       <groupId>org.apiguardian</groupId>
       <artifactId>apiguardian-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>${javax.validation.version}</version>
       <optional>true</optional>
     </dependency>
 
