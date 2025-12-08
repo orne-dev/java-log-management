@@ -3,39 +3,38 @@ package dev.orne.log.manager;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apiguardian.api.API;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Base, logging system agnostic, log level.
+ * Base, logging system agnostic, log file rolling policy.
  * 
  * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
  * @version 1.0, 2025-12
  * @since 1.0
  */
 @API(status = API.Status.STABLE, since = "1.0.0")
-public class Level
-implements Serializable, Comparable<Level> {
+public class FileRollingPolicy
+implements Serializable {
 
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
 
-    /** The name of the level. */
+    /** The code of the policy. */
+    private final String code;
+    /** The name of the policy. */
     private final String name;
-    /** The numeric value of the level. */
-    private final int value;
 
     /**
      * Creates a new instance.
      * 
      * @param builder The builder with the instance state
      */
-    protected Level(
+    protected FileRollingPolicy(
             final BuilderImpl builder) {
         super();
+        this.code = Objects.requireNonNull(builder.code, "The code must be set");
         this.name = Objects.requireNonNull(builder.name, "The name must be set");
-        this.value = Objects.requireNonNull(builder.value, "The value must be set");
     }
 
     /**
@@ -48,21 +47,21 @@ implements Serializable, Comparable<Level> {
     }
 
     /**
-     * Returns the name of the level
+     * Returns the code of the policy.
      * 
-     * @return The name of the level
+     * @return The code of the policy
      */
-    public String getName() {
-        return this.name;
+    public String getCode() {
+        return this.code;
     }
 
     /**
-     * Returns the numeric value of the level.
+     * Returns the name of the policy.
      * 
-     * @return The numeric value of the level
+     * @return The name of the policy
      */
-    public int getValue() {
-        return this.value;
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -80,8 +79,8 @@ implements Serializable, Comparable<Level> {
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.name,
-                this.value);
+                this.code,
+                this.name);
     }
 
     /**
@@ -99,18 +98,9 @@ implements Serializable, Comparable<Level> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Level other = (Level) obj;
-        return Objects.equals(name, other.name) && value == other.value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(final Level other) {
-        return new CompareToBuilder()
-                .append(this.value, other.getValue())
-                .toComparison();
+        final FileRollingPolicy other = (FileRollingPolicy) obj;
+        return Objects.equals(this.code, other.code)
+                && Objects.equals(this.name, other.name);
     }
 
     /**
@@ -118,60 +108,59 @@ implements Serializable, Comparable<Level> {
      */
     @Override
     public String toString() {
-        return this.name;
+        return String.format(
+                "FileRollingPolicy [code=%s, name=%s]",
+                this.code,
+                this.name);
     }
 
     /**
-     * Builder interface for {@link Level} instances.
+     * Builder interface for {@link FileRollingPolicy} instances.
      * 
      * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
      * @version 1.0, 2025-12
      * @since 1.0
      */
-    @API(status = API.Status.STABLE, since = "1.0.0")
     public interface Builder {
 
         /**
-         * Sets the name of the level.
+         * Sets the code of the policy.
          * 
-         * @param name The name of the level
+         * @param code The code of the policy
          * @return This builder, for method chaining
          */
-        Builder withName(
-                String name);
+        Builder withCode(String code);
 
         /**
-         * Sets the numeric value of the level.
+         * Sets the name of the policy.
          * 
-         * @param value The numeric value of the level
+         * @param name The name of the policy
          * @return This builder, for method chaining
          */
-        Builder withValue(
-                int value);
+        Builder withName(String name);
 
         /**
-         * Builds the level instance.
+         * Builds the file rolling policy instance.
          * 
-         * @return The built level instance
+         * @return The built file rolling policy instance
          */
-        Level build();
+        FileRollingPolicy build();
     }
 
     /**
-     * Builder implementation for {@link Level} instances.
+     * Builder implementation for {@link FileRollingPolicy} instances.
      * 
      * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
      * @version 1.0, 2025-12
      * @since 1.0
      */
-    @API(status = API.Status.STABLE, since = "1.0.0")
     protected static class BuilderImpl
     implements Builder {
 
-        /** The name of the level. */
+        /** The code of the policy. */
+        private @Nullable String code;
+        /** The name of the policy. */
         private @Nullable String name;
-        /** The numeric value of the level. */
-        private @Nullable Integer value;
 
         /**
          * Empty constructor.
@@ -186,11 +175,21 @@ implements Serializable, Comparable<Level> {
          * @param copy The instance to copy
          */
         public BuilderImpl(
-                final Level copy) {
+                final FileRollingPolicy copy) {
             super();
             Objects.requireNonNull(copy, "Instance to copy cannot be null");
+            this.code = copy.getCode();
             this.name = copy.getName();
-            this.value = copy.getValue();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public BuilderImpl withCode(
+                final String code) {
+            this.code = code;
+            return this;
         }
 
         /**
@@ -207,18 +206,8 @@ implements Serializable, Comparable<Level> {
          * {@inheritDoc}
          */
         @Override
-        public BuilderImpl withValue(
-                final int value) {
-            this.value = value;
-            return this;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Level build() {
-            return new Level(this);
+        public FileRollingPolicy build() {
+            return new FileRollingPolicy(this);
         }
     }
 }

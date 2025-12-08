@@ -50,17 +50,6 @@ implements Serializable {
     }
 
     /**
-     * Creates a builder with an initial state copied from specified instance.
-     * 
-     * @param copy The instance to copy
-     * @return The created builder
-     */
-    public static Builder copyOf(
-            final Logger copy) {
-        return new Logger.BuilderImpl(copy);
-    }
-
-    /**
      * Returns the name of the logger.
      * 
      * @return The name of the logger
@@ -191,7 +180,8 @@ implements Serializable {
      * @since 1.0
      */
     @API(status = API.Status.STABLE, since = "1.0.0")
-    protected static class BuilderImpl implements Builder {
+    protected static class BuilderImpl
+    implements Builder {
 
         /** The name of the logger. */
         private @Nullable String name;

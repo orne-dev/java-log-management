@@ -44,18 +44,6 @@ implements Serializable {
     }
 
     /**
-     * Creates a builder with an initial state copied from the specified
-     * instance.
-     * 
-     * @param copy The instance to copy
-     * @return The created builder
-     */
-    public static Builder copyOf(
-            final Appender copy) {
-        return new BuilderImpl(copy);
-    }
-
-    /**
      * Returns the name of the appender.
      * 
      * @return The name of the appender
@@ -142,7 +130,8 @@ implements Serializable {
      * @version 1.0, 2025-12
      * @since 1.0
      */
-    protected static class BuilderImpl implements Builder {
+    protected static class BuilderImpl
+    implements Builder {
 
         /** The name of the appender. */
         private @Nullable String name;
@@ -159,7 +148,8 @@ implements Serializable {
          * 
          * @param copy The instance to copy
          */
-        public BuilderImpl(final Appender copy) {
+        public BuilderImpl(
+                final Appender copy) {
             super();
             Objects.requireNonNull(copy, "Instance to copy cannot be null");
             this.name = copy.getName();
