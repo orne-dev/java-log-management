@@ -1,4 +1,4 @@
-package dev.orne.log;
+package dev.orne.log.management;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -11,6 +11,6 @@
     <appender-ref ref="STDOUT" />
   </root>
 
-  <logger name="dev.orne.log" level="off" />
+  <logger name="dev.orne.log.management" level="off" />
 
 </configuration>
