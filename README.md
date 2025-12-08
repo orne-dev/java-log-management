@@ -6,8 +6,8 @@ Provides utilities for runtime management of logging configuration.
 
 [![License][status.license.badge]][status.license]
 [![Latest version][status.maven.badge]][status.maven]
-[![Javadoc][status.javadoc.badge]][status.javadoc]
-[![Maven site][status.site.badge]][status.site.site]
+[![Javadoc][status.javadoc.badge]][javadoc]
+[![Maven site][status.site.badge]][site]
 
 | Branch | CI Status | Quality | Coverage |
 | :------------: | :-------------: | :-------------: | :-------------: |
@@ -57,12 +57,12 @@ For further information refer to the [Maven Site][site] and [Javadoc][javadoc].
 [status.license.badge]: https://img.shields.io/github/license/orne-dev/java-log-management
 [status.maven]: https://central.sonatype.com/artifact/dev.orne/orne-log-management
 [status.maven.badge]: https://img.shields.io/maven-central/v/dev.orne/orne-log-management.svg?label=Maven%20Central
-[status.javadoc]: https://javadoc.io/doc/dev.orne/orne-log-management
 [status.javadoc.badge]: https://javadoc.io/badge2/dev.orne/orne-log-management/javadoc.svg
 [status.site.badge]: https://img.shields.io/website?url=https%3A%2F%2Forne-dev.github.io%2Fjava-log-management%2F
 [status.latest.ci]: https://github.com/orne-dev/java-log-management/actions/workflows/release.yml
 [status.latest.ci.badge]: https://github.com/orne-dev/java-log-management/actions/workflows/release.yml/badge.svg?branch=master
 [status.dev.ci]: https://github.com/orne-dev/java-log-management/actions/workflows/build.yml
 [status.dev.ci.badge]: https://github.com/orne-dev/java-log-management/actions/workflows/build.yml/badge.svg?branch=develop
+[status.sonar]: https://sonarcloud.io/dashboard?id=orne-dev_java-log-management
 [status.sonar.quality.badge]: https://sonarcloud.io/api/project_badges/quality_gate?project=orne-dev_java-log-management
 [status.sonar.cov.badge]: https://sonarcloud.io/api/project_badges/measure?project=orne-dev_java-log-management&metric=coverage
