@@ -17,3 +17,4 @@
         - `RollingPeriod` enumeration for supported file rolling periods
         - `TimeBasedFileRollingPolicy` immutable bean for size based file rolling policies
         - `SizeAndTimeBasedFileRollingPolicy` immutable bean for size and time based file rolling policies
+        - `ManagedAppender` immutable bean for managed appenders
