@@ -65,6 +65,18 @@ extends TimeBasedFileRollingPolicy {
     }
 
     /**
+     * Creates a builder with an initial state copied from the specified
+     * instance.
+     * 
+     * @param copy The instance to copy
+     * @return The created builder
+     */
+    public static Builder builder(
+            final SizeAndTimeBasedFileRollingPolicy copy) {
+        return new BuilderImpl(copy);
+    }
+
+    /**
      * Returns the maximum file size, in bytes.
      * 
      * @return The maximum file size
@@ -116,9 +128,12 @@ extends TimeBasedFileRollingPolicy {
     @Override
     public String toString() {
         return String.format(
-                "SizeAndTimeBasedFileRollingPolicy [code=%s, name=%s]",
-                getCode(),
-                getName());
+                "SizeAndTimeBasedFileRollingPolicy [period=%s, fileSize=%s, maxHistory=%s, maxHistorySize=%s, compressed=%s]",
+                getPeriod(),
+                this.fileSize,
+                getMaxHistory(),
+                getMaxHistorySize(),
+                isCompressed());
     }
 
     /**
@@ -131,18 +146,6 @@ extends TimeBasedFileRollingPolicy {
     @API(status = API.Status.STABLE, since = "1.0.0")
     public interface Builder
     extends TimeBasedFileRollingPolicy.Builder {
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        Builder withCode(String code);
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        Builder withName(String name);
 
         /**
          * {@inheritDoc}
@@ -211,32 +214,9 @@ extends TimeBasedFileRollingPolicy {
          * @param copy The instance to copy
          */
         public BuilderImpl(
-                final FileRollingPolicy copy) {
+                final SizeAndTimeBasedFileRollingPolicy copy) {
             super(copy);
-            if (copy instanceof SizeAndTimeBasedFileRollingPolicy) {
-                final SizeAndTimeBasedFileRollingPolicy tpCopy = (SizeAndTimeBasedFileRollingPolicy) copy;
-                this.fileSize = tpCopy.fileSize;
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public BuilderImpl withCode(
-                final String code) {
-            super.withCode(code);
-            return this;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public BuilderImpl withName(
-                final String name) {
-            super.withName(name);
-            return this;
+            this.fileSize = copy.getFileSize();
         }
 
         /**

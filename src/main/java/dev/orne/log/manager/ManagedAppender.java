@@ -22,6 +22,7 @@ package dev.orne.log.manager;
  * #L%
  */
 
+import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -47,9 +48,9 @@ extends Appender {
     /** The output format of the appender. */
     private String format;
     /** The output charset of the appender. */
-    private String charset;
+    private Charset charset;
     /** The file rolling policy. */
-    private FileRollingPolicy fileRollingPolicy;
+    private @Nullable FileRollingPolicy fileRollingPolicy;
 
     /**
      * Creates a new instance.
@@ -59,9 +60,9 @@ extends Appender {
     protected ManagedAppender(
             final BuilderImpl builder) {
         super(builder);
-        this.filename = Objects.requireNonNull(builder.name, "The output file name must be set");
-        this.format = Objects.requireNonNull(builder.name, "The format must be set");
-        this.charset = Objects.requireNonNull(builder.name, "The charset must be set");
+        this.filename = Objects.requireNonNull(builder.filename, "The output file name must be set");
+        this.format = Objects.requireNonNull(builder.format, "The format must be set");
+        this.charset = Objects.requireNonNull(builder.charset, "The charset must be set");
         this.fileRollingPolicy = builder.fileRollingPolicy;
     }
 
@@ -109,7 +110,7 @@ extends Appender {
      * 
      * @return The output charset of the appender
      */
-    public String getCharset() {
+    public Charset getCharset() {
         return this.charset;
     }
 
@@ -214,7 +215,7 @@ extends Appender {
          * @param charset The output charset of the appender
          * @return This builder, for method chaining
          */
-        Builder withCharset(final String charset);
+        Builder withCharset(Charset charset);
 
         /**
          * Sets the file rolling policy.
@@ -222,7 +223,7 @@ extends Appender {
          * @param policy The file rolling policy
          * @return This builder, for method chaining
          */
-        Builder withFileRollingPolicy(FileRollingPolicy policy);
+        Builder withFileRollingPolicy(@Nullable FileRollingPolicy policy);
 
         /**
          * {@inheritDoc}
@@ -250,7 +251,7 @@ extends Appender {
         /** The output format of the appender. */
         private @Nullable String format;
         /** The output charset of the appender. */
-        private @Nullable String charset;
+        private @Nullable Charset charset;
         /** The file rolling policy. */
         private @Nullable FileRollingPolicy fileRollingPolicy;
 
@@ -313,7 +314,7 @@ extends Appender {
          */
         @Override
         public BuilderImpl withCharset(
-                final String charset) {
+                final Charset charset) {
             this.charset = charset;
             return this;
         }
@@ -323,7 +324,7 @@ extends Appender {
          */
         @Override
         public BuilderImpl withFileRollingPolicy(
-                final FileRollingPolicy policy) {
+                final @Nullable FileRollingPolicy policy) {
             this.fileRollingPolicy = policy;
             return this;
         }

@@ -12,12 +12,13 @@
         - `Logger` immutable bean for loggers
         - `Appender` immutable bean for appenders
         - `FileRollingPolicy` immutable bean for file rolling policies
-        - `FileRollingPolicy` immutable bean for file rolling policies
         - `SizeBasedFileRollingPolicy` immutable bean for size based file rolling policies
         - `RollingPeriod` enumeration for supported file rolling periods
-        - `TimeBasedFileRollingPolicy` immutable bean for size based file rolling policies
+        - `TimeBasedFileRollingPolicy` immutable bean for time based file rolling policies
         - `SizeAndTimeBasedFileRollingPolicy` immutable bean for size and time based file rolling policies
+        - `FileRollingPolicyTemplate` immutable bean for file rolling policy templates
         - `ManagedAppender` immutable bean for managed appenders
+        - `ManagedAppenderConfig` bean for configuration for new managed appenders 
     - Log management exceptions
         - `LogManagementException` exception for internal log management errors
         - `IllegalLevelException` exception for invalid or unsupported log level errors
@@ -27,3 +28,7 @@
         - `InvalidAppenderConfigException` exception for misconfigured appender errors
         - `InvalidFileRollingConfigException` exception for misconfigured file rolling policy errors
         - `UnsupportedFileRollingPolicyException` exception for unsupported file rolling policy errors
+    - `LogManagementConfig` interface for log management system configuration
+    - `LogManagerEngine` interface for logging systems communication layer
+    - `LogManagementCoordinator` interface for log management changes coordinator
+    - `LogManager` interface for log management operations

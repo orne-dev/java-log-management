@@ -43,10 +43,6 @@ extends FileRollingPolicy {
 
     /** The maximum file size, in bytes. */
     private long fileSize;
-    /** The maximum rolled file history count. */
-    private Integer maxHistory;
-    /** If the rolled files should be compressed. */
-    private final boolean compressed;
 
     /**
      * Creates a new instance.
@@ -57,8 +53,6 @@ extends FileRollingPolicy {
             final BuilderImpl builder) {
         super(builder);
         this.fileSize = Objects.requireNonNull(builder.fileSize, "The file size must be set");
-        this.maxHistory = builder.maxHistory;
-        this.compressed = builder.compressed;
     }
 
     /**
@@ -71,30 +65,24 @@ extends FileRollingPolicy {
     }
 
     /**
+     * Creates a builder with an initial state copied from the specified
+     * instance.
+     * 
+     * @param copy The instance to copy
+     * @return The created builder
+     */
+    public static Builder builder(
+            final SizeBasedFileRollingPolicy copy) {
+        return new BuilderImpl(copy);
+    }
+
+    /**
      * Returns the maximum file size, in bytes.
      * 
      * @return The maximum file size
      */
     public long getFileSize() {
         return this.fileSize;
-    }
-
-    /**
-     * Returns the maximum rolled file history count.
-     * 
-     * @return The maximum rolled file history count
-     */
-    public Integer getMaxHistory() {
-        return this.maxHistory;
-    }
-
-    /**
-     * Returns if the rolled files should be compressed.
-     * 
-     * @return If the rolled files should be compressed
-     */
-    public boolean isCompressed() {
-        return this.compressed;
     }
 
     /**
@@ -112,9 +100,7 @@ extends FileRollingPolicy {
     public int hashCode() {
         return Objects.hash(
                 super.hashCode(),
-                this.fileSize,
-                this.maxHistory,
-                this.compressed);
+                this.fileSize);
     }
 
     /**
@@ -133,9 +119,7 @@ extends FileRollingPolicy {
             return false;
         }
         final SizeBasedFileRollingPolicy other = (SizeBasedFileRollingPolicy) obj;
-        return fileSize == other.fileSize
-                && Objects.equals(maxHistory, other.maxHistory)
-                && compressed == other.compressed;
+        return this.fileSize == other.fileSize;
     }
 
     /**
@@ -144,9 +128,10 @@ extends FileRollingPolicy {
     @Override
     public String toString() {
         return String.format(
-                "SizeBasedFileRollingPolicy [code=%s, name=%s]",
-                getCode(),
-                getName());
+                "SizeBasedFileRollingPolicy [fileSize=%s, maxHistory=%s, compressed=%s]",
+                this.fileSize,
+                getMaxHistory(),
+                isCompressed());
     }
 
     /**
@@ -161,18 +146,6 @@ extends FileRollingPolicy {
     extends FileRollingPolicy.Builder {
 
         /**
-         * {@inheritDoc}
-         */
-        @Override
-        Builder withCode(String code);
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        Builder withName(String name);
-
-        /**
          * Sets the maximum file size, in bytes.
          * 
          * @param size The maximum file size
@@ -181,19 +154,15 @@ extends FileRollingPolicy {
         Builder withFileSize(long size);
 
         /**
-         * Sets the maximum rolled file history count.
-         * 
-         * @param maxHistory The maximum rolled file history count
-         * @return This builder, for method chaining
+         * {@inheritDoc}
          */
+        @Override
         Builder withMaxHistory(Integer maxHistory);
 
         /**
-         * Sets if the rolled files should be compressed.
-         * 
-         * @param compressed If the rolled files should be compressed
-         * @return This builder, for method chaining
+         * {@inheritDoc}
          */
+        @Override
         Builder withCompressed(boolean compressed);
 
         /**
@@ -217,10 +186,6 @@ extends FileRollingPolicy {
 
         /** The maximum file size, in bytes. */
         private @Nullable Long fileSize;
-        /** The maximum rolled file history count. */
-        private @Nullable Integer maxHistory;
-        /** If the rolled files should be compressed. */
-        private boolean compressed;
 
         /**
          * Empty constructor.
@@ -235,34 +200,9 @@ extends FileRollingPolicy {
          * @param copy The instance to copy
          */
         public BuilderImpl(
-                final FileRollingPolicy copy) {
+                final SizeBasedFileRollingPolicy copy) {
             super(copy);
-            if (copy instanceof SizeBasedFileRollingPolicy) {
-                final SizeBasedFileRollingPolicy tpCopy = (SizeBasedFileRollingPolicy) copy;
-                this.fileSize = tpCopy.fileSize;
-                this.maxHistory = tpCopy.maxHistory;
-                this.compressed = tpCopy.compressed;
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public BuilderImpl withCode(
-                final String code) {
-            super.withCode(code);
-            return this;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public BuilderImpl withName(
-                final String name) {
-            super.withName(name);
-            return this;
+            this.fileSize = copy.getFileSize();
         }
 
         /**
@@ -281,7 +221,7 @@ extends FileRollingPolicy {
         @Override
         public BuilderImpl withMaxHistory(
                 final Integer maxHistory) {
-            this.maxHistory = maxHistory;
+            super.withMaxHistory(maxHistory);
             return this;
         }
 
@@ -291,7 +231,7 @@ extends FileRollingPolicy {
         @Override
         public BuilderImpl withCompressed(
                 final boolean compressed) {
-            this.compressed = compressed;
+            super.withCompressed(compressed);
             return this;
         }
 

@@ -23,7 +23,6 @@ package dev.orne.log.manager;
  */
 
 import java.util.Objects;
-import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import org.apiguardian.api.API;
@@ -45,12 +44,8 @@ extends FileRollingPolicy {
 
     /** The period to roll the files. */
     private final RollingPeriod period;
-    /** The maximum rolled file history count. */
-    private final Integer maxHistory;
     /** The maximum rolled file history size, in bytes. */
-    private final Long maxHistorySize;
-    /** If the rolled files should be compressed. */
-    private final boolean compressed;
+    private final @Nullable Long maxHistorySize;
 
     /**
      * Creates a new instance.
@@ -61,9 +56,7 @@ extends FileRollingPolicy {
             final BuilderImpl builder) {
         super(builder);
         this.period = Objects.requireNonNull(builder.period, "The period must be set");
-        this.maxHistory = builder.maxHistory;
         this.maxHistorySize = builder.maxHistorySize;
-        this.compressed = builder.compressed;
     }
 
     /**
@@ -76,23 +69,24 @@ extends FileRollingPolicy {
     }
 
     /**
+     * Creates a builder with an initial state copied from the specified
+     * instance.
+     * 
+     * @param copy The instance to copy
+     * @return The created builder
+     */
+    public static Builder builder(
+            final TimeBasedFileRollingPolicy copy) {
+        return new BuilderImpl(copy);
+    }
+
+    /**
      * Returns the period to roll the files.
      * 
      * @return The period to roll the files
      */
     public RollingPeriod getPeriod() {
         return this.period;
-    }
-
-    /**
-     * Returns the maximum rolled file history count.
-     * 
-     * @return The maximum rolled file history count
-     */
-    public OptionalInt getMaxHistory() {
-        return this.maxHistory != null
-                ? OptionalInt.of(this.maxHistory)
-                : OptionalInt.empty();
     }
 
     /**
@@ -104,15 +98,6 @@ extends FileRollingPolicy {
         return this.maxHistorySize != null
                 ? OptionalLong.of(this.maxHistorySize)
                 : OptionalLong.empty();
-    }
-
-    /**
-     * Returns if the rolled files should be compressed.
-     * 
-     * @return If the rolled files should be compressed
-     */
-    public boolean isCompressed() {
-        return this.compressed;
     }
 
     /**
@@ -131,9 +116,7 @@ extends FileRollingPolicy {
         return Objects.hash(
                 super.hashCode(),
                 this.period,
-                this.maxHistory,
-                this.maxHistorySize,
-                this.compressed);
+                this.maxHistorySize);
     }
 
     /**
@@ -153,9 +136,7 @@ extends FileRollingPolicy {
         }
         final TimeBasedFileRollingPolicy other = (TimeBasedFileRollingPolicy) obj;
         return this.period == other.period
-                && Objects.equals(maxHistory, other.maxHistory)
-                && Objects.equals(maxHistorySize, other.maxHistorySize)
-                && this.compressed == other.compressed;
+                && Objects.equals(maxHistorySize, other.maxHistorySize);
     }
 
     /**
@@ -164,9 +145,11 @@ extends FileRollingPolicy {
     @Override
     public String toString() {
         return String.format(
-                "TimeBasedFileRollingPolicy [code=%s, name=%s]",
-                getCode(),
-                getName());
+                "TimeBasedFileRollingPolicy [period=%s, maxHistory=%s, maxHistorySize=%s, compressed=%s]",
+                this.period,
+                getMaxHistory(),
+                this.maxHistorySize,
+                isCompressed());
     }
 
     /**
@@ -181,18 +164,6 @@ extends FileRollingPolicy {
     extends FileRollingPolicy.Builder {
 
         /**
-         * {@inheritDoc}
-         */
-        @Override
-        Builder withCode(String code);
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        Builder withName(String name);
-
-        /**
          * Sets the period to roll the files.
          * 
          * @param period The period to roll the files
@@ -201,11 +172,9 @@ extends FileRollingPolicy {
         Builder withPeriod(RollingPeriod period);
 
         /**
-         * Sets the maximum rolled file history count.
-         * 
-         * @param maxHistory The maximum rolled file history count
-         * @return This builder, for method chaining
+         * {@inheritDoc}
          */
+        @Override
         Builder withMaxHistory(Integer maxHistory);
 
         /**
@@ -217,11 +186,9 @@ extends FileRollingPolicy {
         Builder withMaxHistorySize(Long maxHistorySize);
 
         /**
-         * Sets if the rolled files should be compressed.
-         * 
-         * @param compressed If the rolled files should be compressed
-         * @return This builder, for method chaining
+         * {@inheritDoc}
          */
+        @Override
         Builder withCompressed(boolean compressed);
 
         /**
@@ -245,12 +212,8 @@ extends FileRollingPolicy {
 
         /** The period to roll the files. */
         private @Nullable RollingPeriod period;
-        /** The maximum rolled file history count. */
-        private @Nullable Integer maxHistory;
         /** The maximum rolled file history size, in bytes. */
         private @Nullable Long maxHistorySize;
-        /** If the rolled files should be compressed. */
-        private boolean compressed;
 
         /**
          * Empty constructor.
@@ -265,39 +228,12 @@ extends FileRollingPolicy {
          * @param copy The instance to copy
          */
         public BuilderImpl(
-                final FileRollingPolicy copy) {
+                final TimeBasedFileRollingPolicy copy) {
             super(copy);
-            if (copy instanceof TimeBasedFileRollingPolicy) {
-                final TimeBasedFileRollingPolicy tpCopy = (TimeBasedFileRollingPolicy) copy;
-                this.period = tpCopy.getPeriod();
-                this.maxHistory = tpCopy.getMaxHistory().isPresent()
-                        ? tpCopy.getMaxHistory().getAsInt()
-                        : null;
-                this.maxHistorySize = tpCopy.getMaxHistorySize().isPresent()
-                        ? tpCopy.getMaxHistorySize().getAsLong()
-                        : null;
-                this.compressed = tpCopy.isCompressed();
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public BuilderImpl withCode(
-                final String code) {
-            super.withCode(code);
-            return this;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public BuilderImpl withName(
-                final String name) {
-            super.withName(name);
-            return this;
+            this.period = copy.getPeriod();
+            this.maxHistorySize = copy.getMaxHistorySize().isPresent()
+                    ? copy.getMaxHistorySize().getAsLong()
+                    : null;
         }
 
         /**
@@ -316,7 +252,7 @@ extends FileRollingPolicy {
         @Override
         public BuilderImpl withMaxHistory(
                 final Integer maxHistory) {
-            this.maxHistory = maxHistory;
+            super.withMaxHistory(maxHistory);
             return this;
         }
 
@@ -336,7 +272,7 @@ extends FileRollingPolicy {
         @Override
         public BuilderImpl withCompressed(
                 final boolean compressed) {
-            this.compressed = compressed;
+            super.withCompressed(compressed);
             return this;
         }
 
