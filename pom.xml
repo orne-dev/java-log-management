@@ -41,6 +41,7 @@
 
     <jspecify.version>1.0.0</jspecify.version>
     <commons.lang.version>3.19.0</commons.lang.version>
+    <orne.config.version>1.0.0</orne.config.version>
 
     <github.project.id>java-log-management</github.project.id>
     <sonar.projectKey>orne-dev_java-log-management</sonar.projectKey>
@@ -60,6 +61,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>${commons.lang.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.orne</groupId>
+      <artifactId>config</artifactId>
+      <version>${orne.config.version}</version>
     </dependency>
 
     <dependency>
