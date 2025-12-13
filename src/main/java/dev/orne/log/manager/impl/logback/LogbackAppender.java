@@ -1,10 +1,5 @@
-/**
- * Internal components built-in implementations.
- * 
- * @since 1.0
- */
-@org.jspecify.annotations.NullMarked
-package dev.orne.log.manager.impl;
+package dev.orne.log.manager.impl.logback;
+
 /*-
  * #%L
  * Orne Log Management
@@ -26,3 +21,25 @@ package dev.orne.log.manager.impl;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+import org.apiguardian.api.API;
+
+import dev.orne.log.manager.Appender;
+
+/**
+ * Logback based appender.
+ * 
+ * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
+ * @version 1.0, 2025-12
+ * @since 1.0
+ */
+@API(status = API.Status.INTERNAL, since = "1.0.0")
+public interface LogbackAppender {
+
+    /**
+     * Returns the appender configuration.
+     * 
+     * @return The appender configuration
+     */
+    Appender getData();
+}

@@ -29,10 +29,12 @@
         - `InvalidFileRollingConfigException` exception for misconfigured file rolling policy errors
         - `UnsupportedFileRollingPolicyException` exception for unsupported file rolling policy errors
     - `LogManagementConfig` interface for log management system configuration
-    - `LogManagerEngine` interface for logging systems communication layer
+    - `LogManagementEngine` interface for logging systems communication layer
     - `LogManagementCoordinator` interface for log management changes coordinator
     - `LogManager` interface for log management operations
 - Built-in `LogManager` implementation
     - `LogManagerImpl` default implementation
 - Built-in `LogManagementCoordinator` implementations
     - `NoOpLogManagementCoordinator` local JVM only log management coordinator
+- Built-in `LogManagementEngine` implementations
+    - `LogbackManagementEngine` Logback logging system engine

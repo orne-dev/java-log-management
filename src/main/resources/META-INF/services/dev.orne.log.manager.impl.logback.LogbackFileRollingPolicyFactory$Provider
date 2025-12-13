@@ -1,0 +1,3 @@
+dev.orne.log.manager.impl.logback.LogbackTimeBasedFileRollingPolicyFactory$Provider
+dev.orne.log.manager.impl.logback.LogbackSizeBasedFileRollingPolicyFactory$Provider
+dev.orne.log.manager.impl.logback.LogbackSizeAndTimeBasedFileRollingPolicyFactory$Provider

@@ -1,10 +1,10 @@
 /**
- * Internal components built-in implementations.
+ * Log management implementation using Logback.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @org.jspecify.annotations.NullMarked
-package dev.orne.log.manager.impl;
+package dev.orne.log.manager.impl.logback;
 /*-
  * #%L
  * Orne Log Management
