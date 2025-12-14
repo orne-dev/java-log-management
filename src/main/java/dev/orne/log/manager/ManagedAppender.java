@@ -48,7 +48,7 @@ extends Appender {
     /** The output format of the appender. */
     private String format;
     /** The output charset of the appender. */
-    private Charset charset;
+    private String charset;
     /** The file rolling policy. */
     private @Nullable FileRollingPolicy fileRollingPolicy;
 
@@ -111,7 +111,7 @@ extends Appender {
      * @return The output charset of the appender
      */
     public Charset getCharset() {
-        return this.charset;
+        return Charset.forName(this.charset);
     }
 
     /**
@@ -251,7 +251,7 @@ extends Appender {
         /** The output format of the appender. */
         private @Nullable String format;
         /** The output charset of the appender. */
-        private @Nullable Charset charset;
+        private @Nullable String charset;
         /** The file rolling policy. */
         private @Nullable FileRollingPolicy fileRollingPolicy;
 
@@ -274,7 +274,7 @@ extends Appender {
                 final ManagedAppender managed = (ManagedAppender) copy;
                 this.filename = managed.getFilename();
                 this.format = managed.getFormat();
-                this.charset = managed.getCharset();
+                this.charset = managed.getCharset().name();
                 this.fileRollingPolicy = managed.getFileRollingPolicy().orElse(null);
             }
         }
@@ -315,7 +315,7 @@ extends Appender {
         @Override
         public BuilderImpl withCharset(
                 final Charset charset) {
-            this.charset = charset;
+            this.charset = charset.name();
             return this;
         }
 

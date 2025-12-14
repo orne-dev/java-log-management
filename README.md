@@ -20,17 +20,19 @@ The library provides the following features:
 
 *Unchecked featured are planned for 1.0.0 release*
 
-- [ ] Logging system status API
-    - [ ] Available log levels
-    - [ ] Active loggers
-        - [ ] Log level change
-    - [ ] Active appenders
-        - [ ] Dynamic appenders creation/deletion
+- [X] Logging system status API
+    - [X] Available log levels
+    - [X] Active loggers
+        - [X] Log level change
+    - [X] Active appenders
+        - [X] Dynamic appenders creation/deletion
+        - [X] Dynamic appenders attachment/detachment to loggers
+- [X] Logback logging system support
 - [ ] REST API
     - [ ] JAX-RS support
 - [ ] Enterprise integration support
     - [ ] Link dynamic appenders lifecycle to HTTP Session
-    - [ ] JMS based clustered instances coordination system
+    - [X] JMS based clustered instances coordination system
 - [ ] Spring integration support
     - [ ] Spring web support for REST API
 

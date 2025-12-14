@@ -52,7 +52,7 @@ implements Serializable {
     /** The output format of the appender. */
     private @Nullable String format;
     /** The output charset of the appender. */
-    private @Nullable Charset charset;
+    private @Nullable String charset;
     /** The file rolling policy. */
     private @Nullable FileRollingPolicy fileRollingPolicy;
 
@@ -179,7 +179,8 @@ implements Serializable {
      * @return The output charset of the appender
      */
     public Optional<Charset> getCharset() {
-        return Optional.ofNullable(this.charset);
+        return Optional.ofNullable(this.charset)
+                .map(Charset::forName);
     }
 
     /**
@@ -189,7 +190,7 @@ implements Serializable {
      */
     public void setCharset(
             final @Nullable Charset charset) {
-        this.charset = charset;
+        this.charset = charset == null ? null : charset.name();
     }
 
     /**
