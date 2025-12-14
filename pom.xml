@@ -5,19 +5,19 @@
 
   <parent>
     <groupId>dev.orne</groupId>
-    <artifactId>java-root-pom</artifactId>
+    <artifactId>root-pom</artifactId>
     <version>1.1.1</version>
     <relativePath />
   </parent>
 
-  <artifactId>orne-log-management</artifactId>
+  <artifactId>orne-log-management-parent</artifactId>
   <version>0.1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>Orne Log Management</name>
-  <description>Orne log management system</description>
+  <name>Orne Log Management - Parent</name>
+  <description>Orne log management system - Parent POM</description>
   <inceptionYear>2022</inceptionYear>
-  <url>https://orne-dev.github.io/java-log-management/</url>
+  <url>${github.page.url}</url>
 
   <licenses>
     <license>
@@ -39,86 +39,15 @@
     <java.module.name>dev.orne.log.management</java.module.name>
     <license.licenseName>lgpl_v3</license.licenseName>
 
-    <jspecify.version>1.0.0</jspecify.version>
-    <commons.lang.version>3.19.0</commons.lang.version>
-    <orne.config.version>1.0.0</orne.config.version>
-
-    <jakarta.jms.version>3.0.0</jakarta.jms.version>
-
     <github.project.id>java-log-management</github.project.id>
     <sonar.projectKey>orne-dev_java-log-management</sonar.projectKey>
+    <install.skip>false</install.skip>
+    <deploy.skip>false</deploy.skip>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jspecify</groupId>
-      <artifactId>jspecify</artifactId>
-      <version>${jspecify.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons.lang.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>dev.orne</groupId>
-      <artifactId>config</artifactId>
-      <version>${orne.config.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apiguardian</groupId>
-      <artifactId>apiguardian-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.jms</groupId>
-      <artifactId>jakarta.jms-api</artifactId>
-      <version>${jakarta.jms.version}</version>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <groups>ut</groups>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <configuration>
-            <groups>it</groups>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+  <modules>
+    <module>core</module>
+  </modules>
 
   <scm>
     <connection>${github.scm.connection}</connection>
