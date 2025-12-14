@@ -10,14 +10,14 @@
     <relativePath />
   </parent>
 
-  <artifactId>orne-log-management-jms</artifactId>
+  <artifactId>orne-log-management-jms-jakarta</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Orne Log Management - JMS</name>
+  <name>Orne Log Management - JMS (jakarta)</name>
   <description>Orne log management system - Jakarta JMS coordination</description>
   <inceptionYear>2022</inceptionYear>
-  <url>${github.page.url}jms/</url>
+  <url>${github.page.url}jms-jakarta/</url>
 
   <licenses>
     <license>
@@ -40,7 +40,7 @@
     <java.module.name>dev.orne.log.manager.jms</java.module.name>
     <license.licenseName>lgpl_v3</license.licenseName>
 
-    <jakarta.jms.version>2.0.3</jakarta.jms.version>
+    <jakarta.jms.version>3.0.0</jakarta.jms.version>
 
     <jspecify.version>1.0.0</jspecify.version>
 
@@ -98,6 +98,55 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.eclipse.transformer</groupId>
+          <artifactId>transformer-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <goals>
+                  <goal>jar</goal>
+              </goals>
+              <configuration>
+                <artifact>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>orne-log-management-jms</artifactId>
+                  <version>${project.version}</version>
+                </artifact>
+              </configuration>
+            </execution>
+            <execution>
+              <id>javadoc-jar</id>
+              <goals>
+                  <goal>jar</goal>
+              </goals>
+              <configuration>
+                <skip>${maven.javadoc.skip}</skip>
+                <artifact>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>orne-log-management-jms</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>javadoc</classifier>
+                </artifact>
+              </configuration>
+            </execution>
+            <execution>
+              <id>source-jar</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <skip>${maven.source.skip}</skip>
+                <artifact>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>orne-log-management-jms</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>sources</classifier>
+                </artifact>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
@@ -113,6 +162,12 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.transformer</groupId>
+        <artifactId>transformer-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <scm>

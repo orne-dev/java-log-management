@@ -35,12 +35,12 @@ import dev.orne.log.manager.LogManagementCoordinator;
 import dev.orne.log.manager.LogManagementEngine;
 import dev.orne.log.manager.LogManagementException;
 import dev.orne.log.manager.ManagedAppenderConfig;
-import jakarta.jms.JMSConsumer;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
-import jakarta.jms.Message;
-import jakarta.jms.MessageListener;
-import jakarta.jms.Topic;
+import javax.jms.JMSConsumer;
+import javax.jms.JMSContext;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.Topic;
 
 /**
  * Implementation of log management coordinator that coordinates changes

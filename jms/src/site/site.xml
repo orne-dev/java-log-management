@@ -33,7 +33,7 @@
   <custom>
     <fluidoSkin>
       <gitHub>
-        <projectId>orne-dev/jms</projectId>
+        <projectId>orne-dev/java-log-management</projectId>
         <ribbonOrientation>right</ribbonOrientation>
         <ribbonColor>red</ribbonColor>
       </gitHub>
