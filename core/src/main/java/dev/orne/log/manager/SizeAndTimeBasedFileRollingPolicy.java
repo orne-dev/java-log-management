@@ -65,18 +65,6 @@ extends TimeBasedFileRollingPolicy {
     }
 
     /**
-     * Creates a builder with an initial state copied from the specified
-     * instance.
-     * 
-     * @param copy The instance to copy
-     * @return The created builder
-     */
-    public static Builder builder(
-            final SizeAndTimeBasedFileRollingPolicy copy) {
-        return new BuilderImpl(copy);
-    }
-
-    /**
      * Returns the maximum file size, in bytes.
      * 
      * @return The maximum file size
@@ -109,13 +97,7 @@ extends TimeBasedFileRollingPolicy {
     @Override
     public boolean equals(
             final Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
             return false;
         }
         final SizeAndTimeBasedFileRollingPolicy other = (SizeAndTimeBasedFileRollingPolicy) obj;

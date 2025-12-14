@@ -41,6 +41,9 @@ implements Serializable {
     /** The serial version UID. */
     private static final long serialVersionUID = 1L;
 
+    /** Constant for unbounded maximum history. */
+    public static final int UNBOUNDED_MAX_HISTORY = 0;
+
     /** The maximum rolled file history count. */
     private final int maxHistory;
     /** If the rolled files should be compressed. */
@@ -111,6 +114,24 @@ implements Serializable {
     }
 
     /**
+     * Enumeration of file rolling policy types.
+     * 
+     * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
+     * @version 1.0, 2025-12
+     * @since 1.0
+     */
+    @API(status = API.Status.STABLE, since = "1.0.0")
+    public enum Type {
+        /** Size based file rolling policy. */
+        SIZE_BASED,
+        /** Time based file rolling policy. */
+        TIME_BASED,
+        /** Size and time based file rolling policy. */
+        SIZE_AND_TIME_BASED,
+        ;
+    }
+
+    /**
      * Builder interface for {@link FileRollingPolicy} instances.
      * 
      * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
@@ -156,7 +177,7 @@ implements Serializable {
     implements Builder {
 
         /** The maximum rolled file history count. */
-        private int maxHistory;
+        private int maxHistory = UNBOUNDED_MAX_HISTORY;
         /** If the rolled files should be compressed. */
         private boolean compressed;
 

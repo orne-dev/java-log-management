@@ -69,18 +69,6 @@ extends FileRollingPolicy {
     }
 
     /**
-     * Creates a builder with an initial state copied from the specified
-     * instance.
-     * 
-     * @param copy The instance to copy
-     * @return The created builder
-     */
-    public static Builder builder(
-            final TimeBasedFileRollingPolicy copy) {
-        return new BuilderImpl(copy);
-    }
-
-    /**
      * Returns the period to roll the files.
      * 
      * @return The period to roll the files
@@ -125,13 +113,7 @@ extends FileRollingPolicy {
     @Override
     public boolean equals(
             final Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
             return false;
         }
         final TimeBasedFileRollingPolicy other = (TimeBasedFileRollingPolicy) obj;

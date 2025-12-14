@@ -43,6 +43,8 @@
     <commons.lang.version>3.19.0</commons.lang.version>
     <orne.config.version>1.0.0</orne.config.version>
 
+    <orne.generators.version>0.2.0</orne.generators.version>
+
     <github.project.id>java-log-management</github.project.id>
     <sonar.projectKey>orne-dev_java-log-management</sonar.projectKey>
   </properties>
@@ -76,6 +78,12 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>dev.orne.test</groupId>
+      <artifactId>generators</artifactId>
+      <version>${orne.generators.version}</version>
       <optional>true</optional>
     </dependency>
 

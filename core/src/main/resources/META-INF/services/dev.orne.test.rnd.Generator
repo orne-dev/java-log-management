@@ -1,0 +1,7 @@
+dev.orne.log.manager.rnd.LevelGenerator
+dev.orne.log.manager.rnd.LoggerGenerator
+dev.orne.log.manager.rnd.AppenderGenerator
+dev.orne.log.manager.rnd.SizeBasedFileRollingPolicyGenerator
+dev.orne.log.manager.rnd.TimeBasedFileRollingPolicyGenerator
+dev.orne.log.manager.rnd.SizeAndTimeBasedFileRollingPolicyGenerator
+dev.orne.log.manager.rnd.FileRollingPolicyGenerator
