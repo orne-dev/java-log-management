@@ -36,5 +36,6 @@
     - `LogManagerImpl` default implementation
 - Built-in `LogManagementCoordinator` implementations
     - `NoOpLogManagementCoordinator` local JVM only log management coordinator
+    - `JmsLogManagementCoordinator` JMS topic based log management coordinator
 - Built-in `LogManagementEngine` implementations
     - `LogbackManagementEngine` Logback logging system engine

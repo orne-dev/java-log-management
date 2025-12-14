@@ -242,6 +242,7 @@ implements LogManagementEngine {
                         "Cannot unset level of root logger");
             }
             natLogger.setLevel(null);
+            LOG.info("Logger '{}' level unset", logger);
         } else {
             final ch.qos.logback.classic.Level natLevel =
                     ch.qos.logback.classic.Level.toLevel(level, null);
@@ -250,6 +251,7 @@ implements LogManagementEngine {
                         "Unknown level: " + logger);
             }
             natLogger.setLevel(natLevel);
+            LOG.info("Logger '{}' level set to {}", logger, level);
         }
         return createLogger(natLogger);
     }
@@ -352,7 +354,7 @@ implements LogManagementEngine {
         final ManagedAppender result = appender.getData();
         appender.start();
         getAppendersRegistry().put(result.getName(), appender);
-        LOG.debug("Appender '{}' created", result.getName());
+        LOG.info("Appender '{}' created", result.getName());
         return result;
     }
 
@@ -368,13 +370,13 @@ implements LogManagementEngine {
         for (final ch.qos.logback.classic.Logger logger : getContext().getLoggerList()) {
             final boolean removedFromLogger = logger.detachAppender(appenderImpl.getAppender());
             if (removedFromLogger) {
-                LOG.debug("Appender '{}' detached from '{}'", appender, logger.getName());
+                LOG.info("Appender '{}' detached from '{}'", appender, logger.getName());
             }
             removed = removed || removedFromLogger;
         }
         appenderImpl.stop();
         getAppendersRegistry().remove(appender);
-        LOG.debug("Appender '{}' destroyed", appender);
+        LOG.info("Appender '{}' destroyed", appender);
         return removed;
     }
 
@@ -393,7 +395,7 @@ implements LogManagementEngine {
         }
         final LogbackManagedAppender appenderImpl = getManagedAppender(appender);
         natLogger.addAppender(appenderImpl.getAppender());
-        LOG.debug("Appender '{}' attached to '{}'", appender, logger);
+        LOG.info("Appender '{}' attached to '{}'", appender, logger);
     }
 
     /**
@@ -412,9 +414,9 @@ implements LogManagementEngine {
         final LogbackManagedAppender appenderImpl = getManagedAppender(appender);
         final boolean result = natLogger.detachAppender(appenderImpl.getAppender());
         if (result) {
-            LOG.debug("Appender '{}' detached from '{}'", appender, logger);
+            LOG.info("Appender '{}' detached from '{}'", appender, logger);
         } else {
-            LOG.debug("Appender '{}' was not attached to '{}'", appender, logger);
+            LOG.info("Appender '{}' was not attached to '{}'", appender, logger);
         }
         return result;
     }
