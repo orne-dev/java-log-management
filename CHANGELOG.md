@@ -1,4 +1,4 @@
-# Orne Log Managemenet Changelog
+# Orne Log Managemenet - Changelog
 
 ## 1.0.0 - *Unreleased*
 
@@ -39,3 +39,7 @@
     - `JmsLogManagementCoordinator` JMS topic based log management coordinator
 - Built-in `LogManagementEngine` implementations
     - `LogbackManagementEngine` Logback logging system engine
+- **orne-log-management-jms:** Javax JMS based log management coordination
+    - `JmsLogManagementCoordinator` JMS topic based log management coordinator
+- **orne-log-management-jms-jakarta:** Jakarta JMS based log management coordination
+    - `JmsLogManagementCoordinator` JMS topic based log management coordinator
