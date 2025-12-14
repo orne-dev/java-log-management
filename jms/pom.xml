@@ -10,14 +10,14 @@
     <relativePath />
   </parent>
 
-  <artifactId>orne-log-management</artifactId>
+  <artifactId>orne-log-management-jms</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Orne Log Management</name>
-  <description>Orne log management system</description>
+  <name>Orne Log Management - JMS</name>
+  <description>Orne log management system - JMS coordination</description>
   <inceptionYear>2022</inceptionYear>
-  <url>${github.page.url}core/</url>
+  <url>${github.page.url}jms/</url>
 
   <licenses>
     <license>
@@ -26,6 +26,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
   <developers>
     <developer>
       <id>wamphiry</id>
@@ -36,18 +37,25 @@
 
   <properties>
     <java.version>11</java.version>
-    <java.module.name>dev.orne.log.management</java.module.name>
+    <java.module.name>dev.orne.log.manager.jms</java.module.name>
     <license.licenseName>lgpl_v3</license.licenseName>
 
+    <jakarta.jms.version>3.0.0</jakarta.jms.version>
+
     <jspecify.version>1.0.0</jspecify.version>
-    <commons.lang.version>3.19.0</commons.lang.version>
-    <orne.config.version>1.0.0</orne.config.version>
 
     <github.project.id>java-log-management</github.project.id>
     <sonar.projectKey>orne-dev_java-log-management</sonar.projectKey>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>jakarta.jms</groupId>
+      <artifactId>jakarta.jms-api</artifactId>
+      <version>${jakarta.jms.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -58,14 +66,9 @@
       <version>${jspecify.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons.lang.version}</version>
-    </dependency>
-    <dependency>
       <groupId>dev.orne</groupId>
-      <artifactId>config</artifactId>
-      <version>${orne.config.version}</version>
+      <artifactId>orne-log-management</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -73,12 +76,12 @@
       <artifactId>apiguardian-api</artifactId>
       <optional>true</optional>
     </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <optional>true</optional>
+      <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>

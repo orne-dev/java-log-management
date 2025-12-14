@@ -1,8 +1,8 @@
-package dev.orne.log.manager.impl;
+package dev.orne.log.manager.jms;
 
 /*-
  * #%L
- * Orne Log Management
+ * Orne Log Management - JMS
  * %%
  * Copyright (C) 2022 - 2025 Orne Developments
  * %%
@@ -376,6 +376,9 @@ implements LogManagementCoordinator, MessageListener, AutoCloseable {
         this.engine.detachAppender(logger, appender);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() throws Exception {
         this.context.unsubscribe(this.consumerId);
