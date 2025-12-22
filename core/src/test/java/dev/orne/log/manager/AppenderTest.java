@@ -57,7 +57,7 @@ class AppenderTest extends BaseBeanTest<Appender> {
     }
 
     /**
-     * Tests that the Appender name is required.
+     * Tests that the appender name is required.
      */
     @Test
     void testRequiredName() {
@@ -66,7 +66,7 @@ class AppenderTest extends BaseBeanTest<Appender> {
     }
 
     /**
-     * Tests that the Appender builder assigns all properties.
+     * Tests that the appender builder assigns all properties.
      */
     @Test
     void testBuilder() {

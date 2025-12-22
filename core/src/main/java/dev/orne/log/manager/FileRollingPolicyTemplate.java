@@ -72,18 +72,6 @@ implements Serializable {
     }
 
     /**
-     * Creates a builder with an initial state copied from the specified
-     * instance.
-     * 
-     * @param copy The instance to copy
-     * @return The created builder
-     */
-    public static Builder builder(
-            final FileRollingPolicyTemplate copy) {
-        return new BuilderImpl(copy);
-    }
-
-    /**
      * Returns the code of the policy.
      * 
      * @return The code of the policy
@@ -135,7 +123,8 @@ implements Serializable {
     public int hashCode() {
         return Objects.hash(
                 this.code,
-                this.name);
+                this.name,
+                this.policy);
     }
 
     /**
@@ -155,7 +144,8 @@ implements Serializable {
         }
         final FileRollingPolicyTemplate other = (FileRollingPolicyTemplate) obj;
         return Objects.equals(this.code, other.code)
-                && Objects.equals(this.name, other.name);
+                && Objects.equals(this.name, other.name)
+                && Objects.equals(this.policy, other.policy);
     }
 
     /**
@@ -245,6 +235,7 @@ implements Serializable {
             Objects.requireNonNull(copy, "Instance to copy cannot be null");
             this.code = copy.getCode();
             this.name = copy.getName();
+            this.policy = copy.getPolicy();
         }
 
         /**

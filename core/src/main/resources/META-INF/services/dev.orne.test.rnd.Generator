@@ -5,3 +5,6 @@ dev.orne.log.manager.rnd.SizeBasedFileRollingPolicyGenerator
 dev.orne.log.manager.rnd.TimeBasedFileRollingPolicyGenerator
 dev.orne.log.manager.rnd.SizeAndTimeBasedFileRollingPolicyGenerator
 dev.orne.log.manager.rnd.FileRollingPolicyGenerator
+dev.orne.log.manager.rnd.FileRollingPolicyTemplateGenerator
+dev.orne.log.manager.rnd.ManagedAppenderGenerator
+dev.orne.log.manager.rnd.ManagedAppenderConfigGenerator

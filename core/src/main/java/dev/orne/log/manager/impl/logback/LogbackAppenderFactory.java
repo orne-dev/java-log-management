@@ -191,15 +191,15 @@ public class LogbackAppenderFactory {
      */
     protected ManagedAppender prepareConfig(
             final ManagedAppenderConfig config) {
-        final String name = config.getName()
+        final String name = config.getOptionalName()
                 .orElseGet(() -> UUID.randomUUID().toString());
         return ManagedAppender
                 .builder()
                 .withName(name)
-                .withFilename(config.getFilename().orElse(name))
-                .withFormat(config.getFormat().orElse(this.fallbackFormat))
-                .withCharset(config.getCharset().orElse(this.fallbackCharset))
-                .withFileRollingPolicy(config.getFileRollingPolicy()
+                .withFilename(config.getOptionalFilename().orElse(name))
+                .withFormat(config.getOptionalFormat().orElse(this.fallbackFormat))
+                .withCharset(config.getOptionalCharset().orElse(this.fallbackCharset))
+                .withFileRollingPolicy(config.getOptionalFileRollingPolicy()
                         .orElse(null))
                 .build();
     }

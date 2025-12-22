@@ -88,7 +88,7 @@ class SizeBasedFileRollingPolicyTest extends BaseBeanTest<SizeBasedFileRollingPo
     }
 
     /**
-     * Tests that the level builder assigns all properties.
+     * Tests that the policy builder assigns all properties.
      */
     @Test
     void testBuilder() {

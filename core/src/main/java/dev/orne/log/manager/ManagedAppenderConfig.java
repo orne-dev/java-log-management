@@ -85,7 +85,16 @@ implements Serializable {
      * 
      * @return The name of the appender
      */
-    public Optional<String> getName() {
+    public @Nullable String getName() {
+        return this.name;
+    }
+
+    /**
+     * Returns the name of the appender.
+     * 
+     * @return The name of the appender
+     */
+    public Optional<String> getOptionalName() {
         return Optional.ofNullable(this.name);
     }
 
@@ -116,7 +125,16 @@ implements Serializable {
      * 
      * @return The name of the destination file of the appender
      */
-    public Optional<String> getFilename() {
+    public @Nullable String getFilename() {
+        return this.filename;
+    }
+
+    /**
+     * Returns the name of the destination file of the appender.
+     * 
+     * @return The name of the destination file of the appender
+     */
+    public Optional<String> getOptionalFilename() {
         return Optional.ofNullable(this.filename);
     }
 
@@ -147,7 +165,16 @@ implements Serializable {
      * 
      * @return The output format of the appender
      */
-    public Optional<String> getFormat() {
+    public @Nullable String getFormat() {
+        return this.format;
+    }
+
+    /**
+     * Returns the output format of the appender.
+     * 
+     * @return The output format of the appender
+     */
+    public Optional<String> getOptionalFormat() {
         return Optional.ofNullable(this.format);
     }
 
@@ -178,7 +205,16 @@ implements Serializable {
      * 
      * @return The output charset of the appender
      */
-    public Optional<Charset> getCharset() {
+    public @Nullable Charset getCharset() {
+        return this.charset == null ? null : Charset.forName(this.charset);
+    }
+
+    /**
+     * Returns the output charset of the appender.
+     * 
+     * @return The output charset of the appender
+     */
+    public Optional<Charset> getOptionalCharset() {
         return Optional.ofNullable(this.charset)
                 .map(Charset::forName);
     }
@@ -210,7 +246,16 @@ implements Serializable {
      * 
      * @return The file rolling policy
      */
-    public Optional<FileRollingPolicy> getFileRollingPolicy() {
+    public @Nullable FileRollingPolicy getFileRollingPolicy() {
+        return this.fileRollingPolicy;
+    }
+
+    /**
+     * Returns the file rolling policy.
+     * 
+     * @return The file rolling policy
+     */
+    public Optional<FileRollingPolicy> getOptionalFileRollingPolicy() {
         return Optional.ofNullable(this.fileRollingPolicy);
     }
 
@@ -285,6 +330,6 @@ implements Serializable {
     public String toString() {
         return String.format(
                 "ManagedAppenderConfig [name=%s]",
-                this.getName());
+                this.getOptionalName());
     }
 }

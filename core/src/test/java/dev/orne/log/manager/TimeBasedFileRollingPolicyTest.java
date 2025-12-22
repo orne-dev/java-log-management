@@ -107,7 +107,7 @@ class TimeBasedFileRollingPolicyTest extends BaseBeanTest<TimeBasedFileRollingPo
     }
 
     /**
-     * Tests that the level builder assigns all properties.
+     * Tests that the policy builder assigns all properties.
      */
     @Test
     void testBuilder() {

@@ -90,7 +90,7 @@ class LoggerTest extends BaseBeanTest<Logger> {
     }
 
     /**
-     * Tests that the level builder assigns all properties.
+     * Tests that the logger builder assigns all properties.
      */
     @Test
     void testBuilder() {

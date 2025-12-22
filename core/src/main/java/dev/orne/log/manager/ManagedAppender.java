@@ -76,18 +76,6 @@ extends Appender {
     }
 
     /**
-     * Creates a builder with an initial state copied from the specified
-     * instance.
-     * 
-     * @param copy The instance to copy
-     * @return The created builder
-     */
-    public static Builder copyOf(
-            final Appender copy) {
-        return new BuilderImpl(copy);
-    }
-
-    /**
      * Returns the name of the destination file of the appender.
      * 
      * @return The name of the destination file of the appender
@@ -150,20 +138,14 @@ extends Appender {
     @Override
     public boolean equals(
             final Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (!super.equals(obj)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
         final ManagedAppender other = (ManagedAppender) obj;
-        return Objects.equals(this.charset, other.charset)
-                && Objects.equals(this.fileRollingPolicy, other.fileRollingPolicy)
-                && Objects.equals(this.filename, other.filename)
-                && Objects.equals(this.format, other.format);
+        return Objects.equals(this.filename, other.filename)
+                && Objects.equals(this.format, other.format)
+                && Objects.equals(this.charset, other.charset)
+                && Objects.equals(this.fileRollingPolicy, other.fileRollingPolicy);
     }
 
     /**
@@ -268,15 +250,12 @@ extends Appender {
          * @param copy The instance to copy
          */
         public BuilderImpl(
-                final Appender copy) {
+                final ManagedAppender copy) {
             super(copy);
-            if (copy instanceof ManagedAppender) {
-                final ManagedAppender managed = (ManagedAppender) copy;
-                this.filename = managed.getFilename();
-                this.format = managed.getFormat();
-                this.charset = managed.getCharset().name();
-                this.fileRollingPolicy = managed.getFileRollingPolicy().orElse(null);
-            }
+            this.filename = copy.getFilename();
+            this.format = copy.getFormat();
+            this.charset = copy.getCharset().name();
+            this.fileRollingPolicy = copy.getFileRollingPolicy().orElse(null);
         }
 
         /**
