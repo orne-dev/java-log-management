@@ -39,7 +39,9 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.classic.util.LoggerNameUtil;
+import ch.qos.logback.core.joran.spi.JoranException;
 import dev.orne.log.manager.Appender;
 import dev.orne.log.manager.AppenderNotFoundException;
 import dev.orne.log.manager.IllegalLevelException;
@@ -475,5 +477,20 @@ implements LogManagementEngine {
             }
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void reset()
+    throws LogManagementException {
+        final LoggerContext context = getContext();
+        this.appendersRegistry = null;
+        context.reset();
+        try {
+            new ContextInitializer(context).autoConfig();
+        } catch (final JoranException e) {
+            throw new LogManagementException("Error resetting Logback configuration", e);
+        }
     }
 }

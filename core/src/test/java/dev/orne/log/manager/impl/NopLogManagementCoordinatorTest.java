@@ -135,4 +135,15 @@ class NopLogManagementCoordinatorTest {
         then(engine).should().detachAppender(TEST_LOGGER_NAME, TEST_APPENDER_NAME);
         then(engine).shouldHaveNoMoreInteractions();
     }
+
+    /**
+     * Test for {@link NopLogManagementCoordinator#reset()}.
+     */
+    @Test
+    void testReset()
+    throws LogManagementException {
+        instance.reset();
+        then(engine).should().reset();
+        then(engine).shouldHaveNoMoreInteractions();
+    }
 }

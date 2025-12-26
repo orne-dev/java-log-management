@@ -438,4 +438,12 @@ public interface LogManager {
     throws LogManagementException {
         detachAppender(logger.getName(), appender);
     }
+
+    /**
+     * Resets the logging system to its initial state.
+     * 
+     * @throws LogManagementException If an internal error occurs
+     */
+    void reset()
+    throws LogManagementException;
 }

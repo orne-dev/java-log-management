@@ -109,4 +109,12 @@ public interface LogManagementCoordinator {
             String logger,
             String appender)
     throws LogManagementException;
+
+    /**
+     * Resets the logging system to its initial state.
+     * 
+     * @throws LogManagementException If an internal error occurs
+     */
+    void reset()
+    throws LogManagementException;
 }

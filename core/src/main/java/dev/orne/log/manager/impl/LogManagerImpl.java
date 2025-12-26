@@ -215,4 +215,13 @@ implements LogManager {
     throws LogManagementException {
         this.coordinator.detachAppender(logger, appender);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset()
+    throws LogManagementException {
+        this.coordinator.reset();
+    }
 }

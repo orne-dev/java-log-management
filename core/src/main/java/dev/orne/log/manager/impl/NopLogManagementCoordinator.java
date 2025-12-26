@@ -117,4 +117,13 @@ implements LogManagementCoordinator {
     throws LogManagementException {
         this.engine.detachAppender(logger, appender);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset()
+    throws LogManagementException {
+        this.engine.reset();
+    }
 }

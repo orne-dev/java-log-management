@@ -77,6 +77,8 @@ implements LogManagementCoordinator, MessageListener, AutoCloseable {
     public static final String ATTACH_APPENDER_EVENT = "attach-appender";
     /** The detach appender event type. */
     public static final String DETACH_APPENDER_EVENT = "detach-appender";
+    /** The reset event type. */
+    public static final String RESET_EVENT = "reset";
     /** The logger name JMS property. */
     public static final String LOGGER_PROPERTY = "logger";
     /** The level name JMS property. */
@@ -198,6 +200,10 @@ implements LogManagementCoordinator, MessageListener, AutoCloseable {
                 }
                 case DETACH_APPENDER_EVENT: {
                     detachAppender(message);
+                    break;
+                }
+                case RESET_EVENT: {
+                    reset(message);
                     break;
                 }
                 default:
@@ -374,6 +380,35 @@ implements LogManagementCoordinator, MessageListener, AutoCloseable {
         final String logger = message.getStringProperty(LOGGER_PROPERTY);
         final String appender = message.getStringProperty(APPENDER_PROPERTY);
         this.engine.detachAppender(logger, appender);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset()
+    throws LogManagementException {
+        try {
+            final Message message = this.context.createMessage();
+            message.setStringProperty(MESSAGE_TYPE_PROPERTY, MESSAGE_TYPE);
+            message.setStringProperty(EVENT_TYPE_PROPERTY, RESET_EVENT);
+            this.context.createProducer().send(this.topic, message);
+        } catch (final JMSException e) {
+            throw new LogManagementException(JMS_SEND_ERROR, e);
+        }
+    }
+
+    /**
+     * Reset the logging system on the received JMS message.
+     * 
+     * @param message   The JMS message.
+     * @throws JMSException               If an error occurs processing the JMS message.
+     * @throws LogManagementException     If an error occurs detaching the appender.
+     */
+    protected void reset(
+            final Message message)
+    throws JMSException, LogManagementException {
+        this.engine.reset();
     }
 
     /**

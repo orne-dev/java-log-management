@@ -273,4 +273,16 @@ class LogManagerImplTest {
         then(coordinator).shouldHaveNoMoreInteractions();
         then(engine).shouldHaveNoInteractions();
     }
+
+    /**
+     * Test for {@link LogManagerImpl#reset()}.
+     */
+    @Test
+    void testReset()
+    throws LogManagementException {
+        instance.reset();
+        then(coordinator).should().reset();
+        then(coordinator).shouldHaveNoMoreInteractions();
+        then(engine).shouldHaveNoInteractions();
+    }
 }
