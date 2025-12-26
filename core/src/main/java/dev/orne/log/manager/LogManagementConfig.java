@@ -23,10 +23,12 @@ package dev.orne.log.manager;
  */
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 import org.apiguardian.api.API;
+import org.jspecify.annotations.Nullable;
 
 import dev.orne.config.Config;
 
@@ -109,14 +111,15 @@ extends Config {
     }
 
     /**
-     * Returns the max size for size based log file rolling policies.
+     * Returns the max size for size based log file rolling policies,
+     * in bytes.
      * 
      * @return The max size for size based log file rolling policies
      */
     default long getRollingBySizeMaxSize() {
-        return getLong(
+        return SizeUnits.parse(get(
                 Properties.ROLLING_MAX_SIZE,
-                Defaults.ROLLING_MAX_SIZE);
+                Defaults.ROLLING_MAX_SIZE));
     }
 
     /**
@@ -131,14 +134,15 @@ extends Config {
     }
 
     /**
-     * Returns the max history size for log file rolling policies.
+     * Returns the max history size for log file rolling policies,
+     * in bytes
      * 
      * @return The max history size for log file rolling policies
      */
     default long getRollingMaxHistorySize() {
-        return getLong(
+        return SizeUnits.parse(get(
                 Properties.ROLLING_MAX_HISTORY_SIZE,
-                Defaults.ROLLING_MAX_HISTORY_SIZE);
+                Defaults.ROLLING_MAX_HISTORY_SIZE));
     }
 
     /**
@@ -203,13 +207,21 @@ extends Config {
          */
         public static final String ROLLING_PERIOD =
                 PREFIX + "rolling.time.period";
-        /** The max size for size based log file rolling policies. In bytes. */
+        /**
+         * The max size for size based log file rolling policies.
+         * 
+         * @see SizeUnits
+         */
         public static final String ROLLING_MAX_SIZE =
                 PREFIX + "rolling.size.max";
         /** The log file rolling policies max history. */
         public static final String ROLLING_MAX_HISTORY =
                 PREFIX + "rolling.history.max";
-        /** The log file rolling policies max history size. */
+        /**
+         * The log file rolling policies max history size.
+         * 
+         * @see SizeUnits
+         */
         public static final String ROLLING_MAX_HISTORY_SIZE =
                 PREFIX + "rolling.history.size.max";
         /** The log file rolling policies compression activation. */
@@ -238,7 +250,10 @@ extends Config {
     @API(status = API.Status.STABLE, since = "1.0.0")
     static final class Defaults {
 
-        /** The default base directory of managed appenders' log files. */
+        /**
+         * The default base directory of managed appenders' log files:
+         * System temporary directory.
+         */
         public static final String APPENDER_BASE_DIR =
                 System.getProperty("java.io.tmpdir");
         /** The default pattern of managed appenders' valid log file names. */
@@ -250,26 +265,26 @@ extends Config {
         /** The default fallback format of managed appenders. */
         public static final String APPENDER_FALLBACK_FORMAT =
                 "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
-        /** The default fallback encoding of new appenders' log files. */
+        /**
+         * The default fallback encoding of new appenders' log files: UTF-8.
+         */
         public static final String APPENDER_FALLBACK_CHARSET =
-                "UTF-8";
+                StandardCharsets.UTF_8.name();
 
         /** The default period for time based log file rolling policies. */
         public static final String ROLLING_PERIOD = RollingPeriod.DAILY.name();
         /**
          * The default max size for size based log file rolling policies.
-         * 10 MB.
          */
-        public static final long ROLLING_MAX_SIZE = 10L * 1024L * 1024L;
+        public static final String ROLLING_MAX_SIZE = "10" + SizeUnits.MB;
         /**
          * The default log file rolling policies max history.
          */
         public static final int ROLLING_MAX_HISTORY = 0;
         /**
-         * The default log file rolling policies max history size.
-         * Logback unbounded value.
+         * The default log file rolling policies max history size: Unbounded.
          */
-        public static final long ROLLING_MAX_HISTORY_SIZE = 0;
+        public static final String ROLLING_MAX_HISTORY_SIZE = null;
         /** The default log file rolling policies compression activation. */
         public static final boolean ROLLING_COMPRESS = true;
         /** The default compressed rolled log file extension. */
@@ -279,6 +294,121 @@ extends Config {
          * Private constructor to avoid instantiation.
          */
         private Defaults() {
+            throw new UnsupportedOperationException(
+                    "This is a utility class and cannot be instantiated");
+        }
+    }
+
+    /**
+     * Size units for configuration properties.
+     * <p>
+     * Used to specify size based configuration properties in a human
+     * readable format.
+     * 
+     * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>
+     * @version 1.0, 2025-12
+     * @since 1.0
+     */
+    @API(status = API.Status.STABLE, since = "1.0.0")
+    public static final class SizeUnits {
+
+        /** Unbounded configuration alias. */
+        public static final String UNBOUNDED = "UNBOUNDED";
+
+        /** Kilobyte size unit. */
+        public static final String KB = "KB";
+        /** Megabyte size unit. */
+        public static final String MB = "MB";
+        /** Gigabyte size unit. */
+        public static final String GB = "GB";
+
+        /** Pattern to validate size unit strings. */
+        private static final Pattern SIZE_PATTERN =
+                Pattern.compile("^(" + UNBOUNDED + "|\\d+\\s*(" + KB + "|" + MB + "|" + GB + ")?)$");
+        /** Unbounded size value. */
+        public static final long UNBOUNDED_VALUE = 0L;
+        /** Multiplier for kilobyte size unit. */
+        private static final long KB_MULT = 1024L;
+        /** Multiplier for megabyte size unit. */
+        private static final long MB_MULT = 1024L * KB_MULT;
+        /** Multiplier for gigabyte size unit. */
+        private static final long GB_MULT = 1024L * MB_MULT;
+
+        /**
+         * Converts a size string with units to bytes.
+         * <p>
+         * Valid formats are:
+         * <ul>
+         * <li>"UNBOUNDED" or {@code null}: interpreted as unbounded size</li>
+         * <li>Number only: interpreted as bytes (e.g., "1024")</li>
+         * <li>Number followed by "KB": interpreted as kilobytes (e.g., "10KB")</li>
+         * <li>Number followed by "MB": interpreted as megabytes (e.g., "5MB")</li>
+         * <li>Number followed by "GB": interpreted as gigabytes (e.g., "2GB")</li>
+         * </ul>
+         * 
+         * @param value The size string with units
+         * @return The size in bytes
+         * @throws IllegalArgumentException If the format is invalid
+         */
+        public static long parse(
+                final @Nullable String value) {
+            if (value == null || value.trim().equals(UNBOUNDED)) {
+                return UNBOUNDED_VALUE;
+            }
+            if (!SIZE_PATTERN.matcher(value.trim()).matches()) {
+                throw new IllegalArgumentException(
+                        "Invalid size format: " + value);
+            }
+            if (value.endsWith(KB)) {
+                final String number = value.substring(0, value.length() - KB.length());
+                return Long.parseLong(number.trim()) * KB_MULT;
+            } else if (value.endsWith(MB)) {
+                final String number = value.substring(0, value.length() - MB.length());
+                return Long.parseLong(number.trim()) * MB_MULT;
+            } else if (value.endsWith(GB)) {
+                final String number = value.substring(0, value.length() - GB.length());
+                return Long.parseLong(number.trim()) * GB_MULT;
+            } else {
+                return Long.parseLong(value.trim());
+            }
+        }
+
+        /**
+         * Formats a size in bytes to a human readable string with units.
+         * <p>
+         * The size is represented using the largest possible unit
+         * (GB, MB, KB) without losing precision. If the size is not
+         * an exact multiple of any unit, it is represented in bytes.
+         * <p>
+         * If the size is unbounded (0), it returns "UNBOUNDED".
+         * 
+         * @param bytes The size in bytes
+         * @return The size string with units
+         */
+        public static String format(
+                final long bytes) {
+            if (bytes < 0L) {
+                throw new IllegalArgumentException(
+                        "Size cannot be negative: " + bytes);
+            }
+            if (bytes == UNBOUNDED_VALUE) {
+                return UNBOUNDED;
+            }
+            if (bytes >= GB_MULT && bytes % GB_MULT == 0) {
+                return (bytes / GB_MULT) + GB;
+            } else if (bytes >= MB_MULT && bytes % MB_MULT == 0) {
+                return (bytes / MB_MULT) + MB;
+            } else if (bytes >= KB_MULT && bytes % KB_MULT == 0) {
+                return (bytes / KB_MULT) + KB;
+            } else {
+                return Long.toString(bytes);
+            }
+        }
+
+        /**
+         * Private constructor to avoid instantiation.
+         */
+        private SizeUnits() {
             throw new UnsupportedOperationException(
                     "This is a utility class and cannot be instantiated");
         }
