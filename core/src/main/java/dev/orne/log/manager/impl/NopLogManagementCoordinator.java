@@ -61,7 +61,7 @@ implements LogManagementCoordinator {
      * 
      * @return The log management engine
      */
-    public LogManagementEngine getEngine() {
+    protected LogManagementEngine getEngine() {
         return this.engine;
     }
 

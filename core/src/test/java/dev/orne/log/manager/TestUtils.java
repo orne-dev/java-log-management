@@ -90,4 +90,23 @@ public final class TestUtils {
             }
         }
     }
+
+    /**
+     * Asserts that the given method is protected.
+     * 
+     * @param clazz The class containing the method
+     * @param name The method name
+     * @param parameterTypes The method parameter types
+     */
+    public static void assertProtectedMethod(
+            final Class<?> clazz,
+            final String name,
+            final Class<?>... parameterTypes) {
+        final Method method =  assertDoesNotThrow(
+                () -> clazz.getDeclaredMethod(name, parameterTypes),
+                "Method not found: " + name);
+        assertTrue(
+                Modifier.isProtected(method.getModifiers()),
+                "Method must be protected: " + method);
+    }
 }

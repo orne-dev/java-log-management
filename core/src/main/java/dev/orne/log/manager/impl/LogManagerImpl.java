@@ -73,7 +73,7 @@ implements LogManager {
      * 
      * @return The log management coordinator
      */
-    public LogManagementCoordinator getCoordinator() {
+    protected LogManagementCoordinator getCoordinator() {
         return this.coordinator;
     }
 
@@ -82,7 +82,7 @@ implements LogManager {
      * 
      * @return The log management engine
      */
-    public LogManagementEngine getEngine() {
+    protected LogManagementEngine getEngine() {
         return this.engine;
     }
 
