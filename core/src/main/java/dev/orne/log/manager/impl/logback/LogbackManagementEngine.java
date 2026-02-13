@@ -22,7 +22,6 @@ package dev.orne.log.manager.impl.logback;
  * #L%
  */
 
-import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -98,8 +97,8 @@ implements LogManagementEngine {
     /** The logger not found message template. */
     private static final String LOGGER_NOT_FOUND = "Logger not found: %s";
 
-    /** The Logback context cache. */
-    private static SoftReference<LoggerContext> contextRef;
+    /** The Logback context. */
+    private final LoggerContext context;
     /** The managed Logback appenders factory. */
     private final LogbackAppenderFactory appenderFactory;
     /** The registry of known appenders. */
@@ -113,8 +112,7 @@ implements LogManagementEngine {
      */
     public LogbackManagementEngine(
             final LogManagementConfig config) {
-        super();
-        this.appenderFactory = new LogbackAppenderFactory(
+        this(
                 new LogbackFileRollingPolicies(config),
                 config);
     }
@@ -125,12 +123,53 @@ implements LogManagementEngine {
      * @param policies The available file rolling policies
      * @param config The log management configuration
      */
-    public LogbackManagementEngine(
+    protected LogbackManagementEngine(
             final LogbackFileRollingPolicies policies,
             final LogManagementConfig config) {
+        this(
+                (LoggerContext) LoggerFactory.getILoggerFactory(),
+                policies,
+                config);
+    }
+
+    /**
+     * Creates a new instance.
+     * 
+     * @param context The Logback context
+     * @param policies The available file rolling policies
+     * @param config The log management configuration
+     */
+    protected LogbackManagementEngine(
+            final LoggerContext context,
+            final LogbackFileRollingPolicies policies,
+            final LogManagementConfig config) {
+        this(
+                context,
+                new LogbackAppenderFactory(policies, config));
+    }
+
+    /**
+     * Creates a new instance.
+     * 
+     * @param context The Logback context
+     * @param appenderFactory The managed Logback appenders factory
+     */
+    protected LogbackManagementEngine(
+            final LoggerContext context,
+            final LogbackAppenderFactory appenderFactory) {
         super();
-        this.appenderFactory = new LogbackAppenderFactory(policies, config);
-        this.appendersRegistry = new HashMap<>();
+        this.context = context;
+        this.appenderFactory = appenderFactory;
+    }
+
+    /**
+     * Returns the Logback context.
+     * 
+     * @return The Logback context
+     */
+    @API(status = API.Status.INTERNAL, since = "1.0.0")
+    protected LoggerContext getContext() {
+        return this.context;
     }
 
     /**
@@ -163,8 +202,7 @@ implements LogManagementEngine {
      * {@inheritDoc}
      */
     @Override
-    public List<Level> getLevels()
-    throws LogManagementException {
+    public List<Level> getLevels() {
         return List.copyOf(LEVELS);
     }
 
@@ -172,8 +210,7 @@ implements LogManagementEngine {
      * {@inheritDoc}
      */
     @Override
-    public Logger getRoot()
-    throws LogManagementException {
+    public Logger getRoot() {
         return getLogger(ROOT_LOGGER_NAME);
     }
 
@@ -182,9 +219,8 @@ implements LogManagementEngine {
      */
     @Override
     public Optional<Logger> findLogger(
-            final String name)
-    throws LogManagementException {
-        return Optional.ofNullable(getContext().exists(name))
+            final String name) {
+        return Optional.ofNullable(this.context.exists(name))
                 .map(this::createLogger);
     }
 
@@ -193,9 +229,8 @@ implements LogManagementEngine {
      */
     @Override
     public Logger getLogger(
-            final String name)
-    throws LogManagementException {
-        return createLogger(getContext().getLogger(name));
+            final String name) {
+        return createLogger(this.context.getLogger(name));
     }
 
     /**
@@ -203,8 +238,7 @@ implements LogManagementEngine {
      */
     @Override
     public Map<String, Logger> getChildren(
-            final String parent)
-    throws LogManagementException {
+            final String parent) {
         final List<String> parentParts;
         if (ROOT_LOGGER_NAME.equals(parent)) {
             parentParts = List.of();
@@ -212,7 +246,7 @@ implements LogManagementEngine {
             parentParts = LoggerNameUtil.computeNameParts(parent);
         }
         final Map<String, Logger> result = new LinkedHashMap<>();
-        for (final ch.qos.logback.classic.Logger logger : getContext().getLoggerList()) {
+        for (final ch.qos.logback.classic.Logger logger : this.context.getLoggerList()) {
             final List<String> parts = LoggerNameUtil.computeNameParts(logger.getName());
             if (parts.size() == parentParts.size() + 1) {
                 final String finalPart = parts.remove(parts.size() - 1);
@@ -231,9 +265,9 @@ implements LogManagementEngine {
     @Override
     public Logger setLevel(
             final String logger,
-            final @Nullable String level)
-    throws LogManagementException {
-        final ch.qos.logback.classic.Logger natLogger = getContext().exists(logger);
+            final @Nullable String level) {
+        final ch.qos.logback.classic.Logger natLogger =
+                this.context.exists(logger);
         if (natLogger == null) {
             throw new LoggerNotFoundException(String.format(
                     LOGGER_NOT_FOUND, logger));
@@ -262,8 +296,7 @@ implements LogManagementEngine {
      * {@inheritDoc}
      */
     @Override
-    public List<Appender> getAppenders()
-    throws LogManagementException {
+    public List<Appender> getAppenders() {
         return getAppendersRegistry().values()
                 .stream()
                 .map(LogbackAppender::getData)
@@ -275,10 +308,9 @@ implements LogManagementEngine {
      */
     @Override
     public List<String> getAppenders(
-            final String logger)
-    throws LogManagementException {
+            final String logger) {
         final ch.qos.logback.classic.Logger natLogger =
-                getContext().exists(logger);
+                this.context.exists(logger);
         if (natLogger == null) {
             throw new LoggerNotFoundException(
                     "Logger not found: " + logger);
@@ -295,8 +327,7 @@ implements LogManagementEngine {
      */
     @Override
     public Appender getAppender(
-            final String name)
-    throws LogManagementException {
+            final String name) {
         return getLogbackAppender(name).getData();
     }
 
@@ -352,9 +383,10 @@ implements LogManagementEngine {
     public ManagedAppender createAppender(
             final ManagedAppenderConfig config)
     throws LogManagementException {
-        final LogbackManagedAppender appender = this.appenderFactory.create(getContext(), config);
+        final LogbackManagedAppender appender = this.appenderFactory.create(
+                this.context, config);
         final ManagedAppender result = appender.getData();
-        appender.start();
+        appender.getAppender().start();
         getAppendersRegistry().put(result.getName(), appender);
         LOG.info("Appender '{}' created", result.getName());
         return result;
@@ -365,18 +397,17 @@ implements LogManagementEngine {
      */
     @Override
     public boolean deleteAppender(
-            final String appender)
-    throws LogManagementException {
+            final String appender) {
         boolean removed = false;
-        final LogbackManagedAppender appenderImpl = getManagedAppender(appender);
-        for (final ch.qos.logback.classic.Logger logger : getContext().getLoggerList()) {
-            final boolean removedFromLogger = logger.detachAppender(appenderImpl.getAppender());
+        final LogbackManagedAppender managed = getManagedAppender(appender);
+        for (final ch.qos.logback.classic.Logger logger : this.context.getLoggerList()) {
+            final boolean removedFromLogger = logger.detachAppender(managed.getAppender());
             if (removedFromLogger) {
                 LOG.info("Appender '{}' detached from '{}'", appender, logger.getName());
             }
             removed = removed || removedFromLogger;
         }
-        appenderImpl.stop();
+        managed.getAppender().stop();
         getAppendersRegistry().remove(appender);
         LOG.info("Appender '{}' destroyed", appender);
         return removed;
@@ -388,9 +419,8 @@ implements LogManagementEngine {
     @Override
     public void attachAppender(
             final String logger,
-            final String appender)
-    throws LogManagementException {
-        final ch.qos.logback.classic.Logger natLogger = getContext().exists(logger);
+            final String appender) {
+        final ch.qos.logback.classic.Logger natLogger = this.context.exists(logger);
         if (natLogger == null) {
             throw new LoggerNotFoundException(String.format(
                     LOGGER_NOT_FOUND, logger));
@@ -406,9 +436,8 @@ implements LogManagementEngine {
     @Override
     public boolean detachAppender(
             final String logger,
-            final String appender)
-    throws LogManagementException {
-        final ch.qos.logback.classic.Logger natLogger = getContext().exists(logger);
+            final String appender) {
+        final ch.qos.logback.classic.Logger natLogger = this.context.exists(logger);
         if (natLogger == null) {
             throw new LoggerNotFoundException(String.format(
                     LOGGER_NOT_FOUND, logger));
@@ -424,24 +453,6 @@ implements LogManagementEngine {
     }
 
     /**
-     * Returns the Logback context.
-     * 
-     * @return The Logback context
-     */
-    @API(status = API.Status.INTERNAL, since = "1.0.0")
-    protected static synchronized LoggerContext getContext() {
-        LoggerContext context = null;
-        if (contextRef != null) {
-            context = contextRef.get();
-        }
-        if (context == null) {
-            context = (LoggerContext) LoggerFactory.getILoggerFactory();
-            contextRef = new SoftReference<>(context);
-        }
-        return context;
-    }
-
-    /**
      * Creates a {@code Logger} instance from the given Logback logger.
      * 
      * @param logger The Logback logger
@@ -452,8 +463,8 @@ implements LogManagementEngine {
             final ch.qos.logback.classic.Logger logger) {
         return Logger.builder()
                 .withName(logger.getName())
-                .withLevel(LEVEL_MAP.get(logger.getEffectiveLevel().toString()))
-                .withLevelInherited(logger.getLevel() != null)
+                .withLevel(LEVEL_MAP.get(logger.getEffectiveLevel().levelStr))
+                .withLevelInherited(logger.getLevel() == null)
                 .build();
     }
 
@@ -464,9 +475,8 @@ implements LogManagementEngine {
      */
     @API(status = API.Status.INTERNAL, since = "1.0.0")
     protected Map<String, LogbackAppender> scanAppenders() {
-        final LoggerContext context = getContext();
         final Map<String, LogbackAppender> result = new HashMap<>();
-        for (final ch.qos.logback.classic.Logger logger : context.getLoggerList()) {
+        for (final ch.qos.logback.classic.Logger logger : this.context.getLoggerList()) {
             final Iterator<ch.qos.logback.core.Appender<ILoggingEvent>> it = logger.iteratorForAppenders();
             while (it.hasNext()) {
                 final ch.qos.logback.core.Appender<?> appender = it.next();
@@ -484,11 +494,10 @@ implements LogManagementEngine {
      */
     public void reset()
     throws LogManagementException {
-        final LoggerContext context = getContext();
         this.appendersRegistry = null;
-        context.reset();
+        this.context.reset();
         try {
-            new ContextInitializer(context).autoConfig();
+            new ContextInitializer(this.context).autoConfig();
         } catch (final JoranException e) {
             throw new LogManagementException("Error resetting Logback configuration", e);
         }

@@ -121,6 +121,34 @@ implements LogbackFileRollingPolicyFactory {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                this.compressedSuffix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(
+            final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LogbackSizeBasedFileRollingPolicyFactory other = (LogbackSizeBasedFileRollingPolicyFactory) obj;
+        return Objects.equals(this.compressedSuffix, other.compressedSuffix);
+    }
+
+    /**
      * Provider for {@link LogbackSizeBasedFileRollingPolicyFactory}.
      * 
      * @author <a href="https://github.com/ihernaez">(w) Iker Hernaez</a>

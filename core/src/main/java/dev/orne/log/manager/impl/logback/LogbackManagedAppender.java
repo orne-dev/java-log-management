@@ -23,15 +23,11 @@ package dev.orne.log.manager.impl.logback;
  */
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.apiguardian.api.API;
-import org.jspecify.annotations.Nullable;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.encoder.Encoder;
-import ch.qos.logback.core.spi.LifeCycle;
 import dev.orne.log.manager.ManagedAppender;
 
 /**
@@ -48,16 +44,12 @@ import dev.orne.log.manager.ManagedAppender;
  */
 @API(status = API.Status.INTERNAL, since = "1.0.0")
 public class LogbackManagedAppender
-implements LogbackAppender, LifeCycle {
+implements LogbackAppender {
 
     /** The managed appender configuration. */
     private final ManagedAppender appenderConfig;
     /** The Logback appender. */
     private final Appender<ILoggingEvent> appender;
-    /** The Logback encoder of the appender. */
-    private final Encoder<ILoggingEvent> encoder;
-    /** The Logback file rolling policy of the appender. */
-    private final @Nullable LogbackFileRollingPolicy rollingPolicy;
 
     /**
      * Creates a new instance.
@@ -66,9 +58,7 @@ implements LogbackAppender, LifeCycle {
      */
     protected LogbackManagedAppender(
             final ManagedAppender appenderConfig,
-            final Appender<ILoggingEvent> appender,
-            final Encoder<ILoggingEvent> encoder,
-            final @Nullable LogbackFileRollingPolicy rollingPolicy) {
+            final Appender<ILoggingEvent> appender) {
         super();
         this.appenderConfig = Objects.requireNonNull(
                 appenderConfig, 
@@ -76,10 +66,6 @@ implements LogbackAppender, LifeCycle {
         this.appender = Objects.requireNonNull(
                 appender, 
                 "The Logback appender cannot be null");
-        this.encoder = Objects.requireNonNull(
-                encoder,
-                "The Logback encoder cannot be null");
-        this.rollingPolicy = rollingPolicy;
     }
 
     /**
@@ -97,56 +83,5 @@ implements LogbackAppender, LifeCycle {
      */
     public Appender<ILoggingEvent> getAppender() {
         return this.appender;
-    }
-
-    /**
-     * Returns the Logback encoder of the appender.
-     * 
-     * @return The Logback encoder of the appender
-     */
-    public Encoder<ILoggingEvent> getEncoder() {
-        return this.encoder;
-    }
-
-    /**
-     * Returns the Logback file rolling policy of the appender.
-     * 
-     * @return The Logback file rolling policy of the appender
-     */
-    public Optional<LogbackFileRollingPolicy> getRollingPolicy() {
-        return Optional.ofNullable(this.rollingPolicy);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start() {
-        this.encoder.start();
-        if (this.rollingPolicy != null) {
-            this.rollingPolicy.start();
-        }
-        this.appender.start();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isStarted() {
-        return this.appender.isStarted()
-                && this.encoder.isStarted()
-                && (this.rollingPolicy == null || this.rollingPolicy.isStarted());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void stop() {
-        this.appender.stop();
-        if (this.rollingPolicy != null) {
-            this.rollingPolicy.stop();
-        }
-        this.encoder.stop();
     }
 }

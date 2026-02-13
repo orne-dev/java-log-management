@@ -24,6 +24,7 @@ package dev.orne.log.manager.impl.logback;
 
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -32,11 +33,12 @@ import org.apiguardian.api.API;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.encoder.Encoder;
-import ch.qos.logback.core.rolling.RollingFileAppender;
+import ch.qos.logback.core.filter.Filter;
 import dev.orne.log.manager.InvalidAppenderConfigException;
 import dev.orne.log.manager.LogManagementConfig;
 import dev.orne.log.manager.LogManagementException;
@@ -64,10 +66,10 @@ public class LogbackAppenderFactory {
     private final Pattern filePattern;
     /** The extension of the output files. */
     private final String fileExtension;
-    /** The fallback output format. */
-    private final String fallbackFormat;
     /** The fallback output encoding. */
     private final Charset fallbackCharset;
+    /** The fallback output format. */
+    private final String fallbackFormat;
 
     /**
      * Creates a new instance.
@@ -87,8 +89,8 @@ public class LogbackAppenderFactory {
         this.baseDir = config.getAppenderBaseDir();
         this.filePattern = config.getAppenderFilePattern();
         this.fileExtension = config.getAppenderFileExtension();
-        this.fallbackFormat = config.getAppenderFallbackFormat();
         this.fallbackCharset = config.getAppenderFallbackCharset();
+        this.fallbackFormat = config.getAppenderFallbackFormat();
     }
 
     /** 
@@ -128,21 +130,21 @@ public class LogbackAppenderFactory {
     }
 
     /** 
-     * Returns the fallback output format.
-     * 
-     * @return The fallback output format
-     */
-    public String getFallbackFormat() {
-        return fallbackFormat;
-    }
-
-    /** 
      * Returns the fallback output encoding.
      * 
      * @return The fallback output encoding
      */
     public Charset getFallbackCharset() {
         return fallbackCharset;
+    }
+
+    /** 
+     * Returns the fallback output format.
+     * 
+     * @return The fallback output format
+     */
+    public String getFallbackFormat() {
+        return fallbackFormat;
     }
 
     /**
@@ -164,12 +166,12 @@ public class LogbackAppenderFactory {
         final LogbackFileRollingPolicy rolling = this.policies.create(context, finalConfig);
         final FileAppender<ILoggingEvent> result;
         if (rolling == null) {
-            result = new FileAppender<>();
+            result = new LogbackManagedFileAppender<>();
             result.setName(finalConfig.getName());
             result.setEncoder(encoder);
             result.setFile(file);
         } else {
-            final RollingFileAppender<ILoggingEvent> creator = new RollingFileAppender<>();
+            final LogbackManagedRollingFileAppender<ILoggingEvent> creator = new LogbackManagedRollingFileAppender<>();
             creator.setName(finalConfig.getName());
             creator.setEncoder(encoder);
             creator.setFile(file);
@@ -177,9 +179,10 @@ public class LogbackAppenderFactory {
             creator.setTriggeringPolicy(rolling.getTriggeringPolicy());
             result = creator;
         }
+        createFilters(context, finalConfig).forEach(result::addFilter);
         result.setContext(context);
         result.setAppend(true);
-        return new LogbackManagedAppender(finalConfig, result, encoder, rolling);
+        return new LogbackManagedAppender(finalConfig, result);
     }
 
     /**
@@ -233,11 +236,41 @@ public class LogbackAppenderFactory {
     protected Encoder<ILoggingEvent> createEncoder(
             final LoggerContext context,
             final ManagedAppender config) {
-        final PatternLayoutEncoder result = new PatternLayoutEncoder();
+        final LogbackManagedLayoutWrappingEncoder<ILoggingEvent> result =
+                new LogbackManagedLayoutWrappingEncoder<>();
         result.setContext(context);
         result.setCharset(config.getCharset());
+        result.setLayout(createLayout(context, config));
+        return result;
+    }
+
+    /**
+     * Creates the layout to be used by the appender.
+     * 
+     * @param context The Logback context
+     * @param config The appender configuration
+     * @return The appender layout
+     */
+    protected Layout<ILoggingEvent> createLayout(
+            final LoggerContext context,
+            final ManagedAppender config) {
+        final PatternLayout result = new PatternLayout();
+        result.setContext(context);
         result.setPattern(config.getFormat());
         return result;
+    }
+
+    /**
+     * Creates the filters to be used by the appender.
+     * 
+     * @param context The Logback context
+     * @param config The appender configuration
+     * @return The appender filters
+     */
+    protected List<Filter<ILoggingEvent>> createFilters(
+            final LoggerContext context,
+            final ManagedAppender config) {
+        return List.of();
     }
 
     /**

@@ -77,17 +77,6 @@ extends Config {
     }
 
     /**
-     * Returns the fallback format of managed appenders.
-     * 
-     * @return The fallback format of managed appenders
-     */
-    default String getAppenderFallbackFormat() {
-        return get(
-                Properties.APPENDER_FALLBACK_FORMAT,
-                Defaults.APPENDER_FALLBACK_FORMAT);
-    }
-
-    /**
      * Returns the fallback encoding of managed appenders' log files.
      * 
      * @return The fallback encoding of managed appenders' log files
@@ -96,6 +85,17 @@ extends Config {
         return Charset.forName(get(
                 Properties.APPENDER_FALLBACK_CHARSET,
                 Defaults.APPENDER_FALLBACK_CHARSET));
+    }
+
+    /**
+     * Returns the fallback format of managed appenders.
+     * 
+     * @return The fallback format of managed appenders
+     */
+    default String getAppenderFallbackFormat() {
+        return get(
+                Properties.APPENDER_FALLBACK_FORMAT,
+                Defaults.APPENDER_FALLBACK_FORMAT);
     }
 
     /**
@@ -190,15 +190,15 @@ extends Config {
         /** The extension of managed appenders' log files. */
         public static final String APPENDER_FILE_EXTENSION =
                 PREFIX + "appender.extension";
+        /** The fallback encoding of managed appenders' log files. */
+        public static final String APPENDER_FALLBACK_CHARSET =
+                PREFIX + "appender.charset";
         /**
          * The fallback format of managed appenders.
          * Valid formats depend on the underlying logging framework.
          */
         public static final String APPENDER_FALLBACK_FORMAT =
                 PREFIX + "appender.format";
-        /** The fallback encoding of managed appenders' log files. */
-        public static final String APPENDER_FALLBACK_CHARSET =
-                PREFIX + "appender.charset";
 
         /**
          * The name of the period constant for time based log file rolling policies.
@@ -262,14 +262,14 @@ extends Config {
         /** The default extension of managed appenders' log files. */
         public static final String APPENDER_FILE_EXTENSION =
                 ".log";
-        /** The default fallback format of managed appenders. */
-        public static final String APPENDER_FALLBACK_FORMAT =
-                "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
         /**
          * The default fallback encoding of new appenders' log files: UTF-8.
          */
         public static final String APPENDER_FALLBACK_CHARSET =
                 StandardCharsets.UTF_8.name();
+        /** The default fallback format of managed appenders. */
+        public static final String APPENDER_FALLBACK_FORMAT =
+                "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
 
         /** The default period for time based log file rolling policies. */
         public static final String ROLLING_PERIOD = RollingPeriod.DAILY.name();
