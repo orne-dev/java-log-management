@@ -176,7 +176,9 @@ public class LogbackAppenderFactory {
             creator.setEncoder(encoder);
             creator.setFile(file);
             creator.setRollingPolicy(rolling.getRollingPolicy());
-            creator.setTriggeringPolicy(rolling.getTriggeringPolicy());
+            if (rolling.getTriggeringPolicy() != rolling.getRollingPolicy()) {
+                creator.setTriggeringPolicy(rolling.getTriggeringPolicy());
+            }
             result = creator;
         }
         createFilters(context, finalConfig).forEach(result::addFilter);

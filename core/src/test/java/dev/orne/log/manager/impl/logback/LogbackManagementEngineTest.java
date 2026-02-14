@@ -148,6 +148,7 @@ class LogbackManagementEngineTest {
      * 
      * @see LogbackManagementEngine#getContext()
      * @see LogbackManagementEngine#getAppenderFactory()
+     * @see LogbackManagementEngine#getAppendersRegistry()
      */
     @Test
     void testExtensionGetters() {
