@@ -108,13 +108,6 @@ public class LogbackFileRollingPolicies {
     }
 
     /**
-     * Clears the file rolling policy factories by configuration type cache.
-     */
-    public synchronized void clearCache() {
-        this.cache.clear();
-    }
-
-    /**
      * Returns a file rolling policy factory that supports the specified
      * configuration type.
      * 

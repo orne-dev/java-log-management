@@ -128,7 +128,6 @@ class LogbackAppenderFactoryTest {
                 ManagedAppender.class);
     }
 
-
     /**
      * Test for {@link LogbackAppenderFactory#LogbackAppenderFactory(LogbackFileRollingPolicies, LogManagementConfig)}.
      */
