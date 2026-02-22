@@ -90,14 +90,21 @@ implements LogbackFileRollingPolicyFactory {
     throws LogManagementException {
         Objects.requireNonNull(context);
         Objects.requireNonNull(config);
-        final SizeAndTimeBasedFileRollingPolicy policyConfig = config.getFileRollingPolicy()
-                .map(SizeAndTimeBasedFileRollingPolicy.class::cast)
-                .orElseThrow(() -> new LogManagementException(
-                        "The appender configuration does not have a file rolling policy"));
+        final SizeAndTimeBasedFileRollingPolicy policyConfig;
+        try {
+            policyConfig = config.getFileRollingPolicy()
+                    .map(SizeAndTimeBasedFileRollingPolicy.class::cast)
+                    .orElseThrow(() -> new LogManagementException(
+                            "The appender configuration does not have a file rolling policy"));
+        } catch (final ClassCastException e) {
+            throw new LogManagementException(
+                    "The appender configuration has an incompatible file rolling policy",
+                    e);
+        }
         final String fileNamePattern = String.format(
                 policyConfig.isCompressed()
-                    ? FILENAME_PATTERN
-                    : FILENAME_PATTERN + this.compressedSuffix,
+                    ? FILENAME_PATTERN + this.compressedSuffix
+                    : FILENAME_PATTERN,
                 config.getFilename(),
                 LogbackTimeBasedFileRollingPolicyFactory.periodToPattern(policyConfig.getPeriod()));
         final SizeAndTimeBasedRollingPolicy<ILoggingEvent> rolling =
